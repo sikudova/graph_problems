@@ -61,13 +61,14 @@ class Graph:
         pos = nx.circular_layout(self.__G)
         options_node = {
             'node_color': 'deeppink',
-            'node_size': 300,
+            'node_size': 400,
         }
         options_edges = {
             'font_size': 8,
         }
         colors = [self.G[u][v]['color'] for u, v in self.G.edges()]
-        nx.draw(self.__G, pos, with_labels=True, edge_color=colors)
+        edge_width = [3 if (self.G[u][v]["color"] == "deeppink") else 1 for u, v in self.G.edges()]
+        nx.draw(self.__G, pos, with_labels=True, edge_color=colors, width=edge_width)
         nx.draw_networkx_nodes(self.__G, pos, **options_node)
         nx.draw_networkx_edge_labels(self.__G, pos,
                                      edge_labels={(u, v): d for u, v, d in self.__G.edges(data="weight")},
@@ -88,16 +89,17 @@ class Graph:
             elif not visited[each]:
                 visited[each] = True
                 path.append(each)
+                # data = self.G.get_edge_data(node, each)
+                data = self.G.get_edge_data(node, each)
                 self.G.remove_edge(node, each)
-                self.G.add_edge(node, each, color='deeppink')
-                # self.__dot.edge(str(node), str(each), color="red")
+                self.G.add_edge(node, each, color='deeppink', weight=data["weight"])
                 self.hamiltonian_path(each, visited, path)
 
                 visited[each] = False
                 path.pop()
+                data = self.G.get_edge_data(node, each)
                 self.G.remove_edge(node, each)
-                self.G.add_edge(node, each, color='black')
-                # self.__dot.edge(str(node), str(each), color="black")
+                self.G.add_edge(node, each, color='black', weight=data["weight"])
 
 
 # graph = Graph(7)
