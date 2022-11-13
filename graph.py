@@ -1,5 +1,6 @@
-import networkx as nx
+import itertools
 import matplotlib.pyplot as plt
+import networkx as nx
 from graphviz import Digraph
 
 
@@ -44,6 +45,8 @@ class Graph:
 
         if not self.directed:
             self.__matrix[to_node][from_node] = weight
+            # self.__G.add_edge(to_node, from_node, weight=weight, color="black")
+            # self.__add_edge_graphviz(str(to_node), str(from_node), str(weight))
 
     def print_adj_matrix(self) -> None:
         for each in self.__matrix:
@@ -76,7 +79,7 @@ class Graph:
         plt.show()
         print(self.__G_graphviz.source)
 
-    def hamiltonian_path(self, node: int, visited: list[bool], path: list[int]):
+    def hamiltonian_path_DFS(self, node: int, visited: list[bool], path: list[int]):
         if len(path) == self.size:
             print("Hamiltonian path found: " + str(path))
             self.visualize()
@@ -93,13 +96,18 @@ class Graph:
                 data = self.G.get_edge_data(node, each)
                 self.G.remove_edge(node, each)
                 self.G.add_edge(node, each, color='deeppink', weight=data["weight"])
-                self.hamiltonian_path(each, visited, path)
+                self.hamiltonian_path_DFS(each, visited, path)
 
                 visited[each] = False
                 path.pop()
                 data = self.G.get_edge_data(node, each)
                 self.G.remove_edge(node, each)
                 self.G.add_edge(node, each, color='black', weight=data["weight"])
+
+    def hamiltonian_path_brute_force(self):
+        permutations = itertools.permutations([_ for _ in range(self.size)])
+        for each in permutations:
+            print(each, end=", ")
 
 
 # graph = Graph(7)
@@ -117,7 +125,7 @@ class Graph:
 # graph.visualize()
 
 
-graph = Graph(7)
+graph = Graph(7, True)
 graph.add_edge(0, 1)
 graph.add_edge(1, 2)
 graph.add_edge(1, 3)
@@ -133,4 +141,5 @@ graph.add_edge(6, 0)
 graph.visualize()
 visited = [False for _ in range(graph.size)]
 visited[0] = True
-graph.hamiltonian_path(0, visited, [0])
+graph.hamiltonian_path_DFS(0, visited, [0])
+graph.hamiltonian_path_brute_force()

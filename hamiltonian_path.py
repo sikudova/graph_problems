@@ -12,7 +12,9 @@ def hamiltonian_path2(graph: "Graph", node: int, visited: list[bool], path: list
 
     print("neighbours of {}: {}".format(node, graph.get_neighbours(node)))
     for each in graph.get_neighbours(node):
-        if not visited[each]:
+        if visited[each]:
+            print("node {} already visited".format(each))
+        elif not visited[each]:
             visited[each] = True
             path.append(each)
             hamiltonian_path2(graph, each, visited, path)
