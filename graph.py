@@ -77,7 +77,13 @@ class Graph:
                                      edge_labels={(u, v): d for u, v, d in self.__G.edges(data="weight")},
                                      label_pos=.66, **options_edges)
         plt.show()
-        print(self.__G_graphviz.source)
+        # print(self.__G_graphviz.source)
+
+    def hamiltonian_path_DFS_start(self):
+        for i in range(self.size):
+            visited = [False for _ in range(graph.size)]
+            visited[i] = True
+            graph.hamiltonian_path_DFS(i, visited, [i])
 
     def hamiltonian_path_DFS(self, node: int, visited: list[bool], path: list[int]):
         if len(path) == self.size:
@@ -85,7 +91,7 @@ class Graph:
             self.visualize()
             return
 
-        # print("neighbours of {}: {}".format(node, self.get_neighbours(node)))
+        print("neighbours of {}: {}".format(node, self.get_neighbours(node)))
         for each in self.get_neighbours(node):
             # if visited[each]:
             #     print("node {} already visited".format(each))
@@ -93,10 +99,10 @@ class Graph:
             if not visited[each]:
                 visited[each] = True
                 path.append(each)
-                # data = self.G.get_edge_data(node, each)
                 data = self.G.get_edge_data(node, each)
                 self.G.remove_edge(node, each)
                 self.G.add_edge(node, each, color='deeppink', weight=data["weight"])
+
                 self.hamiltonian_path_DFS(each, visited, path)
 
                 visited[each] = False
@@ -112,16 +118,12 @@ class Graph:
             valid_path = True
             print(path)
             for i in range(len(path) - 1):
-                if path == (0, 1, 3, 4, 5, 2, 6):
-                    print("from {} to {}".format(path[i], path[i + 1]))
                 # print("from {} to {}".format(path[i], path[i + 1]))
                 if self.matrix[path[i]][path[i + 1]] == 1:
-                    if path == (0, 1, 3, 4, 5, 2, 6):
-                        print("connection")
+                    print("connection")
                 # else:
-                if self.matrix[path[i]][path[i + 1]] == 0:
-                    if path == (0, 1, 3, 4, 5, 2, 6):
-                        print("end of connection")
+                elif self.matrix[path[i]][path[i + 1]] == 0:
+                    print("end of connection")
                     valid_path = False
                     break
             if valid_path:
@@ -161,9 +163,30 @@ graph.add_edge(5, 2)
 graph.add_edge(5, 6)
 graph.add_edge(6, 0)
 graph.visualize()
-visited = [False for _ in range(graph.size)]
-visited[0] = True
-graph.hamiltonian_path_DFS(0, visited, [0])
+
+graph.hamiltonian_path_DFS_start()
+
+# visited = [False for _ in range(graph.size)]
+# visited[0] = True
+# graph.hamiltonian_path_DFS(0, visited, [0])
+# visited = [False for _ in range(graph.size)]
+# visited[1] = True
+# graph.hamiltonian_path_DFS(1, visited, [1])
+# visited = [False for _ in range(graph.size)]
+# visited[2] = True
+# graph.hamiltonian_path_DFS(2, visited, [2])
+# visited = [False for _ in range(graph.size)]
+# visited[3] = True
+# graph.hamiltonian_path_DFS(3, visited, [3])
+# visited = [False for _ in range(graph.size)]
+# visited[4] = True
+# graph.hamiltonian_path_DFS(4, visited, [4])
+# visited = [False for _ in range(graph.size)]
+# visited[5] = True
+# graph.hamiltonian_path_DFS(5, visited, [5])
+# visited = [False for _ in range(graph.size)]
+# visited[6] = True
+# graph.hamiltonian_path_DFS(6, visited, [6])
 # graph.hamiltonian_path_brute_force()
 # for each in graph.matrix:
 #     print(each, end="\n")
