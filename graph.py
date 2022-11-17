@@ -14,20 +14,20 @@ class Graph:
     def __init__(self, num_of_nodes: int, directed: bool = True):
         self.__size = num_of_nodes
         self.directed = directed
-        self.__matrix = [[0 for _ in range(self.__size)] for _ in range(self.__size)]
+        self.__matrix: list[list[int]] = [[0 for _ in range(self.__size)] for _ in range(self.__size)]
         self.__G = nx.DiGraph(directed=True)
         self.__G_graphviz = Digraph(comment="Graph")
 
     @property
-    def size(self):
+    def size(self) -> int:
         return self.__size
 
     @property
-    def matrix(self):
+    def matrix(self) -> list[list[int]]:
         return self.__matrix
 
     @property
-    def G(self):
+    def G(self) -> nx.DiGraph:
         return self.__G
 
     def __add_edge_graphviz(self, from_node: str, to_node: str, weight: int = 1):
@@ -85,11 +85,12 @@ class Graph:
             self.visualize()
             return
 
-        print("neighbours of {}: {}".format(node, self.get_neighbours(node)))
+        # print("neighbours of {}: {}".format(node, self.get_neighbours(node)))
         for each in self.get_neighbours(node):
-            if visited[each]:
-                print("node {} already visited".format(each))
-            elif not visited[each]:
+            # if visited[each]:
+            #     print("node {} already visited".format(each))
+            # elif not visited[each]:
+            if not visited[each]:
                 visited[each] = True
                 path.append(each)
                 # data = self.G.get_edge_data(node, each)
@@ -106,8 +107,29 @@ class Graph:
 
     def hamiltonian_path_brute_force(self):
         permutations = itertools.permutations([_ for _ in range(self.size)])
-        for each in permutations:
-            print(each, end=", ")
+        hamiltonian_paths = []
+        for path in permutations:
+            valid_path = True
+            print(path)
+            for i in range(len(path) - 1):
+                if path == (0, 1, 3, 4, 5, 2, 6):
+                    print("from {} to {}".format(path[i], path[i + 1]))
+                # print("from {} to {}".format(path[i], path[i + 1]))
+                if self.matrix[path[i]][path[i + 1]] == 1:
+                    if path == (0, 1, 3, 4, 5, 2, 6):
+                        print("connection")
+                # else:
+                if self.matrix[path[i]][path[i + 1]] == 0:
+                    if path == (0, 1, 3, 4, 5, 2, 6):
+                        print("end of connection")
+                    valid_path = False
+                    break
+            if valid_path:
+                print("hamiltonian path: " + str(path))
+                hamiltonian_paths.append(path)
+        print("all hamiltonian paths: \n")
+        for each in hamiltonian_paths:
+            print(each, end="\n")
 
 
 # graph = Graph(7)
@@ -142,4 +164,6 @@ graph.visualize()
 visited = [False for _ in range(graph.size)]
 visited[0] = True
 graph.hamiltonian_path_DFS(0, visited, [0])
-graph.hamiltonian_path_brute_force()
+# graph.hamiltonian_path_brute_force()
+# for each in graph.matrix:
+#     print(each, end="\n")
