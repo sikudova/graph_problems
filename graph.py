@@ -1,6 +1,7 @@
 import itertools
 import matplotlib.pyplot as plt
 import networkx as nx
+import os
 from graphviz import Digraph
 
 """
@@ -15,8 +16,15 @@ class Node:
         pass
 
 
+def save_graph(file_name: str) -> None:
+    path = os.path.join('hamiltonian_paths_graphs', file_name)
+    plt.savefig(path)
+    plt.show()
+
+
 class Graph:
     def __init__(self, num_of_nodes: int, directed: bool = True):
+        self.__ham_paths = None
         self.__size = num_of_nodes
         self.directed = directed
         self.__matrix: list[list[int]] = [[0 for _ in range(self.__size)] for _ in range(self.__size)]
@@ -81,10 +89,10 @@ class Graph:
         nx.draw_networkx_edge_labels(self.__G, pos,
                                      edge_labels={(u, v): d for u, v, d in self.__G.edges(data="weight")},
                                      label_pos=.66, **options_edges)
-        plt.show()
         # print(self.__G_graphviz.source)
 
     def hamiltonian_path_DFS(self):
+        self.__ham_paths = 0
         for i in range(self.size):
             visited = [False for _ in range(graph.size)]
             visited[i] = True
@@ -92,11 +100,18 @@ class Graph:
 
     def hamiltonian_path_DFS_rec(self, node: int, visited: list[bool], path: list[int]):
         if len(path) == self.size:
+            if self.__ham_paths is None:
+                self.__ham_paths = 1
+            else:
+                self.__ham_paths += 1
             print("Hamiltonian path found: " + str(path))
+            print("counter = " + str(self.__ham_paths))
             self.visualize()
+            save_graph("graph_" + str(self.__ham_paths))
+
             return
 
-        print("neighbours of {}: {}".format(node, self.get_neighbours(node)))
+        # print("neighbours of {}: {}".format(node, self.get_neighbours(node)))
         for each in self.get_neighbours(node):
             # if visited[each]:
             #     print("node {} already visited".format(each))
@@ -123,22 +138,20 @@ class Graph:
             valid_path = True
             print(path)
             for i in range(len(path) - 1):
-                # print("from {} to {}".format(path[i], path[i + 1]))
-                # if self.matrix[path[i]][path[i + 1]] == 1:
-                if self.matrix[path[i]][path[i + 1]] != 0:
-                    print("connection")
-                # else:
-                elif self.matrix[path[i]][path[i + 1]] == 0:
+                # if self.matrix[path[i]][path[i + 1]] != 0:
+                #     print("connection")
+                # elif self.matrix[path[i]][path[i + 1]] == 0:
+                if self.matrix[path[i]][path[i + 1]] == 0:
                     print("end of connection")
                     valid_path = False
                     break
             if valid_path:
                 print("hamiltonian path: " + str(path))
                 hamiltonian_paths.append(path)
-        print("all hamiltonian paths: \n")
+        print("\nall hamiltonian paths")
+        print("number of paths: " + str(len(hamiltonian_paths)))
         for each in hamiltonian_paths:
             print(each, end="\n")
-
 
 
 # graph = Graph(7)
@@ -168,11 +181,11 @@ graph.add_edge(3, 4)
 graph.add_edge(4, 5)
 graph.add_edge(5, 2)
 graph.add_edge(5, 6)
-graph.add_edge(6, 0)
+graph.add_edge(6, 0, 10)
 graph.visualize()
 
-# graph.hamiltonian_path_DFS()
-graph.hamiltonian_path_brute_force()
+graph.hamiltonian_path_DFS()
+# graph.hamiltonian_path_brute_force()
 
 # visited = [False for _ in range(graph.size)]
 # visited[0] = True
