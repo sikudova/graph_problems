@@ -3,6 +3,11 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from graphviz import Digraph
 
+"""
+resources
+- https://www.scaler.com/topics/data-structures/hamiltonian-path/
+"""
+
 
 # node maybe for tree
 class Node:
@@ -79,13 +84,13 @@ class Graph:
         plt.show()
         # print(self.__G_graphviz.source)
 
-    def hamiltonian_path_DFS_start(self):
+    def hamiltonian_path_DFS(self):
         for i in range(self.size):
             visited = [False for _ in range(graph.size)]
             visited[i] = True
-            graph.hamiltonian_path_DFS(i, visited, [i])
+            graph.hamiltonian_path_DFS_rec(i, visited, [i])
 
-    def hamiltonian_path_DFS(self, node: int, visited: list[bool], path: list[int]):
+    def hamiltonian_path_DFS_rec(self, node: int, visited: list[bool], path: list[int]):
         if len(path) == self.size:
             print("Hamiltonian path found: " + str(path))
             self.visualize()
@@ -103,7 +108,7 @@ class Graph:
                 self.G.remove_edge(node, each)
                 self.G.add_edge(node, each, color='deeppink', weight=data["weight"])
 
-                self.hamiltonian_path_DFS(each, visited, path)
+                self.hamiltonian_path_DFS_rec(each, visited, path)
 
                 visited[each] = False
                 path.pop()
@@ -119,7 +124,8 @@ class Graph:
             print(path)
             for i in range(len(path) - 1):
                 # print("from {} to {}".format(path[i], path[i + 1]))
-                if self.matrix[path[i]][path[i + 1]] == 1:
+                # if self.matrix[path[i]][path[i + 1]] == 1:
+                if self.matrix[path[i]][path[i + 1]] != 0:
                     print("connection")
                 # else:
                 elif self.matrix[path[i]][path[i + 1]] == 0:
@@ -132,6 +138,7 @@ class Graph:
         print("all hamiltonian paths: \n")
         for each in hamiltonian_paths:
             print(each, end="\n")
+
 
 
 # graph = Graph(7)
@@ -164,7 +171,8 @@ graph.add_edge(5, 6)
 graph.add_edge(6, 0)
 graph.visualize()
 
-graph.hamiltonian_path_DFS_start()
+# graph.hamiltonian_path_DFS()
+graph.hamiltonian_path_brute_force()
 
 # visited = [False for _ in range(graph.size)]
 # visited[0] = True
