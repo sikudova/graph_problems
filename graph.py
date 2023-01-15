@@ -16,8 +16,8 @@ class Node:
         pass
 
 
-def save_graph(file_name: str) -> None:
-    path = os.path.join('hamiltonian_paths_graphs', file_name)
+def save_graph(dir_name: str, file_name: str) -> None:
+    path = os.path.join(fr'hamiltonian_paths_graphs\{dir_name}', file_name)
     plt.savefig(path)
     plt.show()
 
@@ -96,26 +96,22 @@ class Graph:
         for i in range(self.size):
             visited = [False for _ in range(graph.size)]
             visited[i] = True
-            graph.hamiltonian_path_DFS_rec(i, visited, [i])
+            graph.__hamiltonian_path_DFS_rec(i, visited, [i])
 
-    def hamiltonian_path_DFS_rec(self, node: int, visited: list[bool], path: list[int]):
+    def __hamiltonian_path_DFS_rec(self, node: int, visited: list[bool], path: list[int]):
         if len(path) == self.size:
             if self.__ham_paths is None:
                 self.__ham_paths = 1
             else:
                 self.__ham_paths += 1
             print("Hamiltonian path found: " + str(path))
-            print("counter = " + str(self.__ham_paths))
+            # print("counter = " + str(self.__ham_paths))
             self.visualize()
-            save_graph("graph_" + str(self.__ham_paths))
+            save_graph("DFS", "graph_" + str(self.__ham_paths))
 
             return
 
-        # print("neighbours of {}: {}".format(node, self.get_neighbours(node)))
         for each in self.get_neighbours(node):
-            # if visited[each]:
-            #     print("node {} already visited".format(each))
-            # elif not visited[each]:
             if not visited[each]:
                 visited[each] = True
                 path.append(each)
@@ -123,7 +119,7 @@ class Graph:
                 self.G.remove_edge(node, each)
                 self.G.add_edge(node, each, color='deeppink', weight=data["weight"])
 
-                self.hamiltonian_path_DFS_rec(each, visited, path)
+                self.__hamiltonian_path_DFS_rec(each, visited, path)
 
                 visited[each] = False
                 path.pop()
@@ -131,27 +127,43 @@ class Graph:
                 self.G.remove_edge(node, each)
                 self.G.add_edge(node, each, color='black', weight=data["weight"])
 
+    def __show_hamiltonian_path(self, ham_path):
+        for i in range(len(ham_path) - 1):
+            data = self.G.get_edge_data(ham_path[i], ham_path[i + 1])
+            self.G.remove_edge(ham_path[i], ham_path[i + 1])
+            self.G.add_edge(ham_path[i], ham_path[i + 1], color='deeppink', weight=data["weight"])
+
+        self.visualize()
+        save_graph("brute_force", "graph_" + str(self.__ham_paths))
+
+        for i in range(len(ham_path) - 1):
+            data = self.G.get_edge_data(ham_path[i], ham_path[i + 1])
+            self.G.remove_edge(ham_path[i], ham_path[i + 1])
+            self.G.add_edge(ham_path[i], ham_path[i + 1], color='black', weight=data["weight"])
+
     def hamiltonian_path_brute_force(self):
+        self.__ham_paths = 0
         permutations = itertools.permutations([_ for _ in range(self.size)])
         hamiltonian_paths = []
         for path in permutations:
             valid_path = True
-            print(path)
             for i in range(len(path) - 1):
-                # if self.matrix[path[i]][path[i + 1]] != 0:
-                #     print("connection")
-                # elif self.matrix[path[i]][path[i + 1]] == 0:
                 if self.matrix[path[i]][path[i + 1]] == 0:
-                    print("end of connection")
+                    # print("end of connection")
                     valid_path = False
                     break
             if valid_path:
-                print("hamiltonian path: " + str(path))
+                # print("hamiltonian path: " + str(path))
                 hamiltonian_paths.append(path)
-        print("\nall hamiltonian paths")
+                if self.__ham_paths is None:
+                    self.__ham_paths = 1
+                else:
+                    self.__ham_paths += 1
+                self.__show_hamiltonian_path(path)
+        print("all hamiltonian paths")
         print("number of paths: " + str(len(hamiltonian_paths)))
         for each in hamiltonian_paths:
-            print(each, end="\n")
+            print("hamiltonian path: " + str(each), end="\n")
 
 
 # graph = Graph(7)
@@ -185,7 +197,7 @@ graph.add_edge(6, 0, 10)
 graph.visualize()
 
 graph.hamiltonian_path_DFS()
-# graph.hamiltonian_path_brute_force()
+graph.hamiltonian_path_brute_force()
 
 # visited = [False for _ in range(graph.size)]
 # visited[0] = True
