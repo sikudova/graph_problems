@@ -4,11 +4,6 @@ import networkx as nx
 import os
 from graphviz import Digraph
 
-"""
-resources
-- https://www.scaler.com/topics/data-structures/hamiltonian-path/
-"""
-
 
 # node maybe for tree
 class Node:
@@ -24,11 +19,11 @@ def save_graph(dir_name: str, file_name: str) -> None:
 
 class Graph:
     def __init__(self, num_of_nodes: int, directed: bool = True):
+        self.directed = directed
         self.__ham_paths = None
         self.__size = num_of_nodes
-        self.directed = directed
         self.__matrix: list[list[int]] = [[0 for _ in range(self.__size)] for _ in range(self.__size)]
-        self.__G = nx.DiGraph(directed=True)
+        self.__G = nx.DiGraph(directed=directed)
         self.__G_graphviz = Digraph(comment="Graph")
 
     @property
@@ -42,6 +37,10 @@ class Graph:
     @property
     def G(self) -> nx.DiGraph:
         return self.__G
+
+    @property
+    def ham_paths(self):
+        return self.__ham_paths
 
     def __add_edge_graphviz(self, from_node: str, to_node: str, weight: int = 1):
         if ("\t" + from_node + " [label=" + from_node + "]\n") not in self.__G_graphviz.body:
@@ -58,17 +57,19 @@ class Graph:
 
         if not self.directed:
             self.__matrix[to_node][from_node] = weight
-            # self.__G.add_edge(to_node, from_node, weight=weight, color="black")
-            # self.__add_edge_graphviz(str(to_node), str(from_node), str(weight))
+            self.__G.add_edge(to_node, from_node, weight=weight, color="black")
+            self.__add_edge_graphviz(str(to_node), str(from_node), str(weight))
 
     def print_adj_matrix(self) -> None:
-        for each in self.__matrix:
-            print(each, end="\n")
+        print(self.__G.adjacency())
+        # for each in self.__matrix:
+        #     print(each, end="\n")
 
     def get_neighbours(self, node: int) -> list[int]:
         neighbours = []
         for i in range(self.__size):
-            if self.matrix[node][i]:
+            # if self.matrix[node][i]:
+            if self.__G.adjacency()[node][i]:
                 neighbours.append(i)
         return neighbours
 
@@ -84,12 +85,17 @@ class Graph:
         }
         colors = [self.G[u][v]['color'] for u, v in self.G.edges()]
         edge_width = [3 if (self.G[u][v]["color"] == "deeppink") else 1 for u, v in self.G.edges()]
-        nx.draw(self.__G, pos, with_labels=True, edge_color=colors, width=edge_width)
+        nx.draw(self.__G, pos, with_labels=True, edge_color=colors, width=edge_width, arrows=self.directed)
         nx.draw_networkx_nodes(self.__G, pos, **options_node)
-        nx.draw_networkx_edge_labels(self.__G, pos,
-                                     edge_labels={(u, v): d for u, v, d in self.__G.edges(data="weight")},
-                                     label_pos=.66, **options_edges)
+        if self.directed:
+            nx.draw_networkx_edge_labels(self.__G, pos,
+                                         edge_labels={(u, v): d for u, v, d in self.__G.edges(data="weight")},
+                                         label_pos=.66, **options_edges)
+        else:
+            edge_labels = dict([((n1, n2), d['weight']) for n1, n2, d in self.__G.edges(data=True)])
+            nx.draw_networkx_edge_labels(self.__G, pos, edge_labels=edge_labels, label_pos=.66)
         # print(self.__G_graphviz.source)
+        plt.show()
 
     def hamiltonian_path_DFS(self):
         self.__ham_paths = 0
@@ -105,12 +111,12 @@ class Graph:
             else:
                 self.__ham_paths += 1
             print("Hamiltonian path found: " + str(path))
-            # print("counter = " + str(self.__ham_paths))
             self.visualize()
             save_graph("DFS", "graph_" + str(self.__ham_paths))
 
             return
 
+        print("neighbours of {}: {}".format(node, self.get_neighbours(node)))
         for each in self.get_neighbours(node):
             if not visited[each]:
                 visited[each] = True
@@ -181,23 +187,34 @@ class Graph:
 # graph.visualize()
 
 
-graph = Graph(7, True)
+graph = Graph(4, False)
 graph.add_edge(0, 1)
-graph.add_edge(1, 2)
+graph.add_edge(0, 2)
 graph.add_edge(1, 3)
-graph.add_edge(2, 4)
-graph.add_edge(2, 5)
-graph.add_edge(2, 6)
-graph.add_edge(3, 2)
-graph.add_edge(3, 4)
-graph.add_edge(4, 5)
-graph.add_edge(5, 2)
-graph.add_edge(5, 6)
-graph.add_edge(6, 0, 10)
+graph.add_edge(1, 2)
+graph.add_edge(3, 3)
+graph.print_adj_matrix()
 graph.visualize()
-
-graph.hamiltonian_path_DFS()
 graph.hamiltonian_path_brute_force()
+# graph.hamiltonian_path_DFS()
+
+# graph = Graph(7, True)
+# graph.add_edge(0, 1)
+# graph.add_edge(1, 2)
+# graph.add_edge(1, 3)
+# graph.add_edge(2, 4)
+# graph.add_edge(2, 5)
+# graph.add_edge(2, 6)
+# graph.add_edge(3, 2)
+# graph.add_edge(3, 4)
+# graph.add_edge(4, 5)
+# graph.add_edge(5, 2)
+# graph.add_edge(5, 6)
+# graph.add_edge(6, 0, 10)
+# graph.visualize()
+
+# graph.hamiltonian_path_DFS()
+# graph.hamiltonian_path_brute_force()
 
 # visited = [False for _ in range(graph.size)]
 # visited[0] = True
