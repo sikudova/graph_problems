@@ -1,4 +1,6 @@
 import itertools
+
+import graphviz
 import matplotlib.pyplot as plt
 import networkx as nx
 import os
@@ -17,7 +19,7 @@ class Graph:
     def __init__(self, directed):
         self.directed = directed
         self.__G = nx.DiGraph() if self.directed else nx.Graph()
-        self.__G_graphviz = Digraph(comment="Graph")
+        self.__G_graphviz = Digraph(comment="Graph") if self.directed else graphviz.Graph(comment="Graph")
 
     @property
     def G(self) -> nx.Graph:
@@ -29,6 +31,8 @@ class Graph:
     def print_adj_matrix(self) -> None:
         print(self.__G.adjacency())
 
+    def add_node(self, index: int):
+
     def add_edge(self, from_node: Node, to_node: Node, weight: int = 1):
         self.__G.add_edge(from_node.index, to_node.index, weight=weight, color="black")
         self.__add_edge_graphviz(str(from_node.index), str(to_node.index), str(weight))
@@ -39,3 +43,6 @@ class Graph:
         if ("\t" + to_node + " [label=" + to_node + "]\n") not in self.__G_graphviz.body:
             self.__G_graphviz.node(name=to_node, label=to_node)
         self.__G_graphviz.edge(from_node, to_node, label=weight)
+
+
+graph = Graph(True)
