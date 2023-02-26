@@ -1,4 +1,5 @@
 import itertools
+from typing import Tuple, List
 
 import graphviz
 import matplotlib.pyplot as plt
@@ -15,6 +16,9 @@ class Node:
     def __init__(self, value):
         self.index = next(Node.index_iter)
         self.value = value
+        self.visited: bool = False
+        self.color = None
+        self.flag = None
 
 
 class Graph:
@@ -46,6 +50,8 @@ class Graph:
         return len(self.adj_matrix())
 
     def adj_matrix(self):
+        print(self.G.adjacency())
+        # print(nx.adjacency_matrix(self.G))
         return (nx.adjacency_matrix(self.G)).todense()
 
     def print_adj_matrix(self) -> None:
@@ -55,12 +61,13 @@ class Graph:
         neighbours
     """
 
-    def get_neighbours(self, node: int) -> list[int]:
-        neighbours = []
-        for i in range(self.size):
-            if self.adj_matrix()[node, i]:
-                neighbours.append(i)
-        return neighbours
+    def get_neighbours(self, node: Node):
+        return self.G.neighbors(node)
+        # neighbours = []
+        # for i in range(self.size):
+        #     if self.adj_matrix()[node, i]:
+        #         neighbours.append(i)
+        # return neighbours
 
     """
         adding edges and nodes
@@ -94,7 +101,6 @@ class Graph:
     def visualize(self):
         pos = nx.circular_layout(self.__G)
         node_labels = {u: u.value for u in self.G.nodes()}
-        print(node_labels)
         options_node = {
             'node_color': 'deeppink',
             'node_size': 400,
@@ -122,12 +128,34 @@ class Graph:
         BFS -- breadth first search
     """
 
-    def BFS_basic(self, start: int):
-        nx.bfs_tree()
+    def BFS_show_tree(self, BFS_tree):
+        for u, v in BFS_tree:
+            data = self.G.get_edge_data(u, v)
+            self.G.remove_edge(u, v)
+            self.G.add_edge(u, v, color='deeppink', weight=data["weight"])
+
+        self.visualize()
+
+    def BFS_basic(self, start: Node, show_tree: bool = False):
+
+        BFS_tree: List[Tuple[Node, Node]] = []
+
         queue = Queue()
         queue.put(start)
+        start.visited = True
         while not queue.empty():
-            pass
+            node = queue.get()
+            for each in self.get_neighbours(node):
+                if not each.visited:
+                    BFS_tree.append((node, each))
+                    each.visited = True
+                    queue.put(each)
+
+        for u, v in BFS_tree:
+            print("{} - {}".format(u.value, v.value))
+
+        if show_tree:
+            self.BFS_show_tree(BFS_tree)
 
     def BFS_attributes(self, start: int):
         pass
@@ -159,11 +187,14 @@ graph.add_edge(node_04, node_05)
 graph.add_edge(node_05, node_02)
 graph.add_edge(node_06, node_01)
 graph.add_edge(node_06, node_04)
-graph.print_adj_matrix()
+# graph.print_adj_matrix()
 graph.visualize()
-print(graph.get_neighbours(1))
-print(graph.get_neighbours(6))
-print(graph.get_neighbours(0))
+print(graph.get_neighbours(node_01))
+print(graph.get_neighbours(node_06))
+print(graph.get_neighbours(node_00))
+
+graph.BFS_basic(node_01, True)
+
 # graph = Graph(False)
 # graph.add_node(1)
 # graph.add_node(2)
