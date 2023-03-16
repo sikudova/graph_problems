@@ -75,11 +75,6 @@ class Graph:
 
     def get_neighbours(self, node: Node):
         return self.G.neighbors(node)
-        # neighbours = []
-        # for i in range(self.size):
-        #     if self.adj_matrix()[node, i]:
-        #         neighbours.append(i)
-        # return neighbours
 
     def get_nodes(self):
         return self.G.nodes()
@@ -110,34 +105,27 @@ class Graph:
         visualizing graph
     """
 
-    def filter_edge(self, u, v):
-        return self.G[u][v].get("color", "deeppink")
-
     def visualize_graphviz(self):
         print(self.__G_graphviz.source)
 
     def visualize(self, node_colors=None, BFS_tree=False, BFS_edges=None):
-        # design of  the graph
+        # layout of  the graph
         pos = nx.circular_layout(self.__G)
-        # options_node = {
-        #     # 'node_color': 'deeppink',
-        #     'node_size': 600,
-        # }
 
         # edges settings
         options_edges = {
-            'font_size': 8,
+            "font_size": 8,
         }
-        edge_colors = [self.G[u][v]['color'] for u, v in self.G.edges()]
+        edge_colors = [self.G[u][v]["color"] for u, v in self.G.edges()]
         edge_width = [3 if (self.G[u][v]["color"] == "deeppink") else 1 for u, v in self.G.edges()]
 
         # node settings
         node_labels = {u: u.value for u in self.G.nodes()}
 
         if node_colors is None:
-            node_colors = ["deeppink" for each in self.G.nodes()]
-            # node_colors = [each.color if each.color != WHITE else "blue" for each in self.G.nodes()]
+            node_colors = ["deeppink" for _ in self.G.nodes()]
 
+        # filter edges
         if BFS_tree:
             edges = BFS_edges
         else:
@@ -156,7 +144,6 @@ class Graph:
         plt.show()
 
     def visualize_traverse(self):
-        # edge_colors = [self.G[u][v]['color'] for u, v in self.G.edges()]
         node_colors = "deeppink"
 
         self.visualize(node_colors)
@@ -168,13 +155,21 @@ class Graph:
         BFS -- breadth first search
     """
 
-    def BFS_show_tree(self, BFS_tree):
+    def BFS_show_tree(self, BFS_tree: List[Tuple[Node, Node]]):
+        """
+        Changes the colour of each edge that is in the BFS tree
+        (to pink colour, because pink is colour of the year 2023)
+
+        Calls two functions for visualizing traverse of BFS algorithm and resulting BFS tree.
+
+        :param BFS_tree: list of tuples, each tuple contains two nodes that creates edge
+        :return: None
+        """
         for u, v in BFS_tree:
             data = self.G.get_edge_data(u, v)
             self.G.remove_edge(u, v)
-            self.G.add_edge(u, v, color='deeppink', weight=data["weight"])
+            self.G.add_edge(u, v, color="deeppink", weight=data["weight"])
 
-        # self.visualize()
         self.visualize_traverse()
         self.visualize_BFS_tree(BFS_tree)
 
@@ -248,8 +243,8 @@ class Graph:
 
 
 graph = Graph(True)
-node_00 = Node("Zlín")
-node_01 = Node("Praha")
+node_00 = Node("Zlin")
+node_01 = Node("Prague")
 node_02 = Node("Brno")
 node_03 = Node(3)
 node_04 = Node(4)
