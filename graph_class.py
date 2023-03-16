@@ -10,6 +10,9 @@ import os
 from queue import Queue
 from graphviz import Digraph
 
+# node labels:
+# → https://stackoverflow.com/questions/30791334/making-networkx-plot-where-edges-only-display-edited-numeric-value-not-field-na
+
 # MAGIC VALUES (CONSTANTS)
 
 WHITE = "white"
@@ -107,41 +110,59 @@ class Graph:
         visualizing graph
     """
 
+    def filter_edge(self, u, v):
+        return self.G[u][v].get("color", "deeppink")
+
     def visualize_graphviz(self):
         print(self.__G_graphviz.source)
 
-    def visualize_traverse(self):
-        edge_colors = [self.G[u][v]['color'] for u, v in self.G.edges()]
-        node_colors = "deeppink"
-
-
-    def visualize(self):
+    def visualize(self, node_colors=None, BFS_tree=False, BFS_edges=None):
+        # design of  the graph
         pos = nx.circular_layout(self.__G)
-        node_labels = {u: u.value for u in self.G.nodes()}
         # options_node = {
         #     # 'node_color': 'deeppink',
         #     'node_size': 600,
         # }
+
+        # edges settings
         options_edges = {
             'font_size': 8,
         }
         edge_colors = [self.G[u][v]['color'] for u, v in self.G.edges()]
-        node_colors = [each.color if each.color != WHITE else "blue" for each in self.G.nodes()]
-        print("node colors: " + str(node_colors))
         edge_width = [3 if (self.G[u][v]["color"] == "deeppink") else 1 for u, v in self.G.edges()]
-        # nx.draw_networkx_nodes(self.__G, pos, **options_node)
-        nx.draw(self.__G, pos, labels=node_labels, with_labels=True, edge_color=edge_colors, node_color=node_colors,
-                font_color="white", width=edge_width, arrows=self.__directed, node_size=700)
-        # nx.draw_networkx_labels(self.G, pos, node_labels, font_size=16, font_color='r')
+
+        # node settings
+        node_labels = {u: u.value for u in self.G.nodes()}
+
+        if node_colors is None:
+            node_colors = ["deeppink" for each in self.G.nodes()]
+            # node_colors = [each.color if each.color != WHITE else "blue" for each in self.G.nodes()]
+
+        if BFS_tree:
+            edges = BFS_edges
+        else:
+            edges = self.G.edges()
+
+        nx.draw(self.G, pos, edgelist=edges, labels=node_labels, with_labels=True, edge_color=edge_colors,
+                node_color=node_colors, font_color="black", width=edge_width, arrows=self.__directed, node_size=700)
 
         if self.__directed:
             nx.draw_networkx_edge_labels(self.__G, pos,
                                          edge_labels={(u, v): d for u, v, d in self.__G.edges(data="weight")},
                                          label_pos=.66, **options_edges)
         else:
-            edge_labels = dict([((n1, n2), d['weight']) for n1, n2, d in self.__G.edges(data=True)])
+            edge_labels = dict([((u, v), d["weight"]) for u, v, d in self.__G.edges(data=True)])
             nx.draw_networkx_edge_labels(self.__G, pos, edge_labels=edge_labels, label_pos=.66)
         plt.show()
+
+    def visualize_traverse(self):
+        # edge_colors = [self.G[u][v]['color'] for u, v in self.G.edges()]
+        node_colors = "deeppink"
+
+        self.visualize(node_colors)
+
+    def visualize_BFS_tree(self, BFS_edges):
+        self.visualize(BFS_tree=True, BFS_edges=BFS_edges)
 
     """
         BFS -- breadth first search
@@ -153,7 +174,9 @@ class Graph:
             self.G.remove_edge(u, v)
             self.G.add_edge(u, v, color='deeppink', weight=data["weight"])
 
-        self.visualize()
+        # self.visualize()
+        self.visualize_traverse()
+        self.visualize_BFS_tree(BFS_tree)
 
     def BFS_basic(self, start: Node, show_tree: bool = False):
         """
@@ -257,7 +280,7 @@ graph.visualize()
 # print(graph.get_neighbours(node_00))
 
 graph.BFS_basic(node_01, True)
-graph.BFS_attributes(node_01, True)
+# graph.BFS_attributes(node_01, True)
 
 # graph = Graph(False)
 # graph.add_node(1)
