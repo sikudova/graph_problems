@@ -1,4 +1,5 @@
 import itertools
+import math
 from typing import Tuple, List
 
 import graphviz
@@ -9,6 +10,12 @@ import os
 from queue import Queue
 from graphviz import Digraph
 
+# MAGIC VALUES (CONSTANTS)
+
+WHITE = "white"
+GREY = "grey"
+BLACK = "black"
+
 
 class Node:
     index_iter = itertools.count()
@@ -18,6 +25,8 @@ class Node:
         self.value = value
         self.visited: bool = False
         self.color = None
+        self.distance = None
+        self.pi = None
         self.flag = None
 
 
@@ -69,6 +78,9 @@ class Graph:
         #         neighbours.append(i)
         # return neighbours
 
+    def get_nodes(self):
+        return self.G.nodes()
+
     """
         adding edges and nodes
     """
@@ -98,21 +110,28 @@ class Graph:
     def visualize_graphviz(self):
         print(self.__G_graphviz.source)
 
+    def visualize_traverse(self):
+        edge_colors = [self.G[u][v]['color'] for u, v in self.G.edges()]
+        node_colors = "deeppink"
+
+
     def visualize(self):
         pos = nx.circular_layout(self.__G)
         node_labels = {u: u.value for u in self.G.nodes()}
-        options_node = {
-            'node_color': 'deeppink',
-            'node_size': 400,
-        }
+        # options_node = {
+        #     # 'node_color': 'deeppink',
+        #     'node_size': 600,
+        # }
         options_edges = {
             'font_size': 8,
         }
-        colors = [self.G[u][v]['color'] for u, v in self.G.edges()]
+        edge_colors = [self.G[u][v]['color'] for u, v in self.G.edges()]
+        node_colors = [each.color if each.color != WHITE else "blue" for each in self.G.nodes()]
+        print("node colors: " + str(node_colors))
         edge_width = [3 if (self.G[u][v]["color"] == "deeppink") else 1 for u, v in self.G.edges()]
-        nx.draw(self.__G, pos, labels=node_labels, with_labels=True, edge_color=colors, width=edge_width,
-                arrows=self.__directed)
-        nx.draw_networkx_nodes(self.__G, pos, **options_node)
+        # nx.draw_networkx_nodes(self.__G, pos, **options_node)
+        nx.draw(self.__G, pos, labels=node_labels, with_labels=True, edge_color=edge_colors, node_color=node_colors,
+                font_color="white", width=edge_width, arrows=self.__directed, node_size=700)
         # nx.draw_networkx_labels(self.G, pos, node_labels, font_size=16, font_color='r')
 
         if self.__directed:
@@ -137,7 +156,14 @@ class Graph:
         self.visualize()
 
     def BFS_basic(self, start: Node, show_tree: bool = False):
+        """
+        Traverse a graph with breadth first search (BFS) from starting node.
+        Sets visited attribute of nodes to True or False.
 
+        :param start: starting node
+        :param show_tree: True to visualize and show BFS tree, False otherwise
+        :return: BFS tree
+        """
         BFS_tree: List[Tuple[Node, Node]] = []
 
         queue = Queue()
@@ -157,8 +183,45 @@ class Graph:
         if show_tree:
             self.BFS_show_tree(BFS_tree)
 
-    def BFS_attributes(self, start: int):
-        pass
+        return BFS_tree
+
+    def BFS_attributes(self, start: Node, show_tree: bool = False):
+        BFS_tree: List[Tuple[Node, Node]] = []
+
+        # initialize attributes of each vertex
+        for each in self.get_nodes():
+            print(each.value)
+            each.color = WHITE
+            each.distance = math.inf
+            each.pi = None
+
+        # initialize attributes of starting vertex
+        start.color = GREY
+        start.distance = 0
+        start.pi = None
+
+        # create queue
+        queue = Queue()
+        queue.put(start)
+
+        while not queue.empty():
+            node = queue.get()
+            for each in self.get_neighbours(node):
+                if each.color == WHITE:
+                    BFS_tree.append((node, each))
+                    each.color = GREY
+                    each.distance = node.distance + 1
+                    each.pi = node
+                    queue.put(each)
+            node.color = BLACK
+
+        for u, v in BFS_tree:
+            print("{} - {}".format(u.value, v.value))
+
+        if show_tree:
+            self.BFS_show_tree(BFS_tree)
+
+        return BFS_tree
 
 
 graph = Graph(True)
@@ -189,11 +252,12 @@ graph.add_edge(node_06, node_01)
 graph.add_edge(node_06, node_04)
 # graph.print_adj_matrix()
 graph.visualize()
-print(graph.get_neighbours(node_01))
-print(graph.get_neighbours(node_06))
-print(graph.get_neighbours(node_00))
+# print(graph.get_neighbours(node_01))
+# print(graph.get_neighbours(node_06))
+# print(graph.get_neighbours(node_00))
 
 graph.BFS_basic(node_01, True)
+graph.BFS_attributes(node_01, True)
 
 # graph = Graph(False)
 # graph.add_node(1)
