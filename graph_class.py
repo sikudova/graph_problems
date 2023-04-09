@@ -327,7 +327,10 @@ class Graph:
     def dijkstra_algorithm(self, start: Node, show_tree: bool = False):
         dijkstra_tree: List[Tuple[Node, Node]] = []
 
+        # queue
         q = []
+
+        # visited nodes
         S = []
 
         # initialization
@@ -338,31 +341,23 @@ class Graph:
         start.distance = 0
         hq.heappush(q, (start.distance, start))
 
-        print(self.adj_matrix())
-
+        # main loop
         while q:
+            # extract min
             prio, node = hq.heappop(q)
-            print(prio, node.value)
+            # add to visited nodes
             S.append(node)
+
+            # all neighbours
             for each in self.get_neighbours(node):
+                # if neighbour was visited - skip
                 if each in S:
                     continue
-                print(each.value)
-                print("{} < {}".format(node.distance + self.adj_matrix()[node.index, each.index], each.distance))
-                if node.distance + self.adj_matrix()[node.index, each.index] < each.distance:
 
+                # relax edge condition
+                if node.distance + self.adj_matrix()[node.index, each.index] < each.distance:
                     self.relax_edge(node, each, node.distance + self.adj_matrix()[node.index, each.index],
                                     dijkstra_tree)
-
-                    for x, y in dijkstra_tree:
-                        print("from {} to {}".format(x.value, y.value))
-                    # each.distance = node.distance + self.adj_matrix()[node.index, each.index]
-                    # each.pi = node
-                    # for s, t in dijkstra_tree:
-                    #     if t == each:
-                    #         dijkstra_tree.remove((s, t))
-                    # dijkstra_tree.append((node, each))
-
                     hq.heappush(q, (each.distance, each))
 
         for u, v in dijkstra_tree:
@@ -392,15 +387,15 @@ graph.add_node(node_05)
 graph.add_node(node_06)
 
 graph.add_edge(node_00, node_01, 10)
-graph.add_edge(node_01, node_02, 15)
-graph.add_edge(node_01, node_03)
-graph.add_edge(node_02, node_05)
-graph.add_edge(node_02, node_06)
-graph.add_edge(node_03, node_04)
-graph.add_edge(node_04, node_05)
-graph.add_edge(node_05, node_02)
-graph.add_edge(node_06, node_01)
-graph.add_edge(node_06, node_04)
+graph.add_edge(node_01, node_02, 10)
+graph.add_edge(node_01, node_03, 3)
+graph.add_edge(node_02, node_05, 5)
+graph.add_edge(node_02, node_06, 12)
+graph.add_edge(node_03, node_04, 4)
+graph.add_edge(node_04, node_05, 6)
+graph.add_edge(node_05, node_02, 2)
+graph.add_edge(node_06, node_01, 3)
+graph.add_edge(node_06, node_04, 7)
 # graph.print_adj_matrix()
 graph.visualize()
 # print(graph.get_neighbours(node_01))
@@ -412,8 +407,8 @@ graph.visualize()
 # graph.DFS_iterative_basic(node_01, True)
 
 graph.dijkstra_algorithm(node_01, True)
-for each in graph.get_nodes():
-    print("{} with {}".format(each.value, each.distance))
+for node in graph.get_nodes():
+    print("{} with {}".format(node.value, node.distance))
 
 # graph = Graph(False)
 # graph.add_node(1)
