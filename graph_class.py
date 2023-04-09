@@ -1,13 +1,15 @@
 import itertools
 import math
+import queue
 from typing import Tuple, List
 
 import graphviz
+import heapq as hq
 import matplotlib.pyplot as plt
 import networkx as nx
 import scipy as sp
 import os
-from queue import Queue, LifoQueue
+from queue import Queue, LifoQueue, PriorityQueue
 from graphviz import Digraph
 
 # node labels:
@@ -21,7 +23,7 @@ BLACK = "black"
 
 
 class Node:
-    index_iter = itertools.count()
+    index_iter = itertools.count(start=0)
 
     def __init__(self, value):
         self.index = next(Node.index_iter)
@@ -30,7 +32,12 @@ class Node:
         self.color = None
         self.distance = None
         self.pi = None
+        self.discovery_time = None
+        self.finishing_time = None
         self.flag = None
+
+    def __lt__(self, other):
+        return self.distance < other.distance
 
 
 class Graph:
@@ -62,7 +69,7 @@ class Graph:
         return len(self.adj_matrix())
 
     def adj_matrix(self):
-        print(self.G.adjacency())
+        # print(self.G.adjacency())
         # print(nx.adjacency_matrix(self.G))
         return (nx.adjacency_matrix(self.G)).todense()
 
@@ -130,8 +137,6 @@ class Graph:
 
         if node_colors is None:
             node_colors = ["deeppink" for _ in self.G.nodes()]
-
-
 
         nx.draw(self.G, pos, edgelist=edges, labels=node_labels, with_labels=True, edge_color=edge_colors,
                 node_color=node_colors, font_color="black", width=edge_width, arrows=self.__directed, node_size=700)
@@ -283,13 +288,10 @@ class Graph:
         # main loop
         while not stack.empty():
             node = stack.get()
-            # print("popping {} with {}".format(node.value, node.visited))
             if not node.visited:
                 node.visited = True
-                # print("{} with {}".format(node.value, node.visited))
                 for each in self.get_neighbours(node):
                     if not each.visited:
-                        # print("from {} to {}".format(node.value, each.value))
                         DFS_tree.append((node, each))
                         stack.put(each)
 
@@ -310,6 +312,67 @@ class Graph:
     def DFS_recursive_attributes(self):
         pass
 
+    """
+        Dijkstra´s algorithm
+    """
+
+    def relax_edge(self, from_node, to_node, value, tree):
+        to_node.distance = value
+        to_node.pi = from_node
+        for s, t in tree:
+            if t == to_node:
+                tree.remove((s, t))
+        tree.append((from_node, to_node))
+
+    def dijkstra_algorithm(self, start: Node, show_tree: bool = False):
+        dijkstra_tree: List[Tuple[Node, Node]] = []
+
+        q = []
+        S = []
+
+        # initialization
+        for each in self.get_nodes():
+            each.distance = math.inf
+            each.pi = None
+
+        start.distance = 0
+        hq.heappush(q, (start.distance, start))
+
+        print(self.adj_matrix())
+
+        while q:
+            prio, node = hq.heappop(q)
+            print(prio, node.value)
+            S.append(node)
+            for each in self.get_neighbours(node):
+                if each in S:
+                    continue
+                print(each.value)
+                print("{} < {}".format(node.distance + self.adj_matrix()[node.index, each.index], each.distance))
+                if node.distance + self.adj_matrix()[node.index, each.index] < each.distance:
+
+                    self.relax_edge(node, each, node.distance + self.adj_matrix()[node.index, each.index],
+                                    dijkstra_tree)
+
+                    for x, y in dijkstra_tree:
+                        print("from {} to {}".format(x.value, y.value))
+                    # each.distance = node.distance + self.adj_matrix()[node.index, each.index]
+                    # each.pi = node
+                    # for s, t in dijkstra_tree:
+                    #     if t == each:
+                    #         dijkstra_tree.remove((s, t))
+                    # dijkstra_tree.append((node, each))
+
+                    hq.heappush(q, (each.distance, each))
+
+        for u, v in dijkstra_tree:
+            print("{} - {}".format(u.value, v.value))
+
+        if show_tree:
+            self.BDFS_show_tree(dijkstra_tree)
+
+        return dijkstra_tree
+
 
 graph = Graph(True)
 node_00 = Node("Zlin")
@@ -320,6 +383,7 @@ node_04 = Node(4)
 node_05 = Node(5)
 node_06 = Node(6)
 
+graph.add_node(node_00)
 graph.add_node(node_01)
 graph.add_node(node_02)
 graph.add_node(node_03)
@@ -343,9 +407,13 @@ graph.visualize()
 # print(graph.get_neighbours(node_06))
 # print(graph.get_neighbours(node_00))
 
-graph.BFS_basic(node_01, True)
-graph.BFS_attributes(node_01, True)
-graph.DFS_iterative_basic(node_01, True)
+# graph.BFS_basic(node_01, True)
+# graph.BFS_attributes(node_01, True)
+# graph.DFS_iterative_basic(node_01, True)
+
+graph.dijkstra_algorithm(node_01, True)
+for each in graph.get_nodes():
+    print("{} with {}".format(each.value, each.distance))
 
 # graph = Graph(False)
 # graph.add_node(1)
