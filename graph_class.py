@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import scipy as sp
 import os
-from queue import Queue
+from queue import Queue, LifoQueue
 from graphviz import Digraph
 
 # node labels:
@@ -108,16 +108,22 @@ class Graph:
     def visualize_graphviz(self):
         print(self.__G_graphviz.source)
 
-    def visualize(self, node_colors=None, BFS_tree=False, BFS_edges=None):
+    def visualize(self, node_colors=None, BDFS_tree=False, BDFS_edges=None):
         # layout of  the graph
         pos = nx.circular_layout(self.__G)
+
+        # filter edges
+        if BDFS_tree:
+            edges = BDFS_edges
+        else:
+            edges = self.G.edges()
 
         # edges settings
         options_edges = {
             "font_size": 8,
         }
-        edge_colors = [self.G[u][v]["color"] for u, v in self.G.edges()]
-        edge_width = [3 if (self.G[u][v]["color"] == "deeppink") else 1 for u, v in self.G.edges()]
+        edge_colors = [self.G[u][v]["color"] for u, v in edges]
+        edge_width = [3 if (self.G[u][v]["color"] == "deeppink") else 1 for u, v in edges]
 
         # node settings
         node_labels = {u: u.value for u in self.G.nodes()}
@@ -125,11 +131,7 @@ class Graph:
         if node_colors is None:
             node_colors = ["deeppink" for _ in self.G.nodes()]
 
-        # filter edges
-        if BFS_tree:
-            edges = BFS_edges
-        else:
-            edges = self.G.edges()
+
 
         nx.draw(self.G, pos, edgelist=edges, labels=node_labels, with_labels=True, edge_color=edge_colors,
                 node_color=node_colors, font_color="black", width=edge_width, arrows=self.__directed, node_size=700)
@@ -148,30 +150,31 @@ class Graph:
 
         self.visualize(node_colors)
 
-    def visualize_BFS_tree(self, BFS_edges):
-        self.visualize(BFS_tree=True, BFS_edges=BFS_edges)
-
     """
         BFS -- breadth first search
     """
 
-    def BFS_show_tree(self, BFS_tree: List[Tuple[Node, Node]]):
+    def visualize_BDFS_tree(self, BDFS_edges):
+        self.visualize(BDFS_tree=True, BDFS_edges=BDFS_edges)
+
+    def BDFS_show_tree(self, BDFS_tree: List[Tuple[Node, Node]]):
         """
         Changes the colour of each edge that is in the BFS tree
-        (to pink colour, because pink is colour of the year 2023)
+        (to pink colour, because pink (viva magenta) is the colour of the year 2023)
 
         Calls two functions for visualizing traverse of BFS algorithm and resulting BFS tree.
 
-        :param BFS_tree: list of tuples, each tuple contains two nodes that creates edge
+        :param BDFS_tree: list of tuples, each tuple contains two nodes that creates edge
         :return: None
         """
-        for u, v in BFS_tree:
+        for u, v in BDFS_tree:
+            print("from {} to {}".format(u.value, v.value))
             data = self.G.get_edge_data(u, v)
             self.G.remove_edge(u, v)
             self.G.add_edge(u, v, color="deeppink", weight=data["weight"])
 
         self.visualize_traverse()
-        self.visualize_BFS_tree(BFS_tree)
+        self.visualize_BDFS_tree(BDFS_tree)
 
     def BFS_basic(self, start: Node, show_tree: bool = False):
         """
@@ -180,13 +183,17 @@ class Graph:
 
         :param start: starting node
         :param show_tree: True to visualize and show BFS tree, False otherwise
-        :return: BFS tree
+        :return: BFS tree (in this format: List[Tuple[Node, Node]])
         """
         BFS_tree: List[Tuple[Node, Node]] = []
 
+        # create queue
         queue = Queue()
         queue.put(start)
+
         start.visited = True
+
+        # main loop
         while not queue.empty():
             node = queue.get()
             for each in self.get_neighbours(node):
@@ -199,11 +206,27 @@ class Graph:
             print("{} - {}".format(u.value, v.value))
 
         if show_tree:
-            self.BFS_show_tree(BFS_tree)
+            self.BDFS_show_tree(BFS_tree)
 
         return BFS_tree
 
     def BFS_attributes(self, start: Node, show_tree: bool = False):
+        """
+        Traverse a graph  with breadth first search (BFS) from starting node.
+
+        Both for directed and undirected graphs.
+        On weighted graphs counts number of edges from starting node to the actual node, not the shortest path.
+        On unweighted graphs computes the shortest path from starting node to all other nodes that are reachable.
+
+        Works with 3 attributes:
+            -  color (status of exploring),
+            -  distance (number of edges from starting node),
+            -  pi (predecessor)
+
+        :param start: starting node
+        :param show_tree: True to visualize and show BFS tree, False otherwise
+        :return: BFS tree (in this format: List[Tuple[Node, Node]])
+        """
         BFS_tree: List[Tuple[Node, Node]] = []
 
         # initialize attributes of each vertex
@@ -222,6 +245,7 @@ class Graph:
         queue = Queue()
         queue.put(start)
 
+        # main loop
         while not queue.empty():
             node = queue.get()
             for each in self.get_neighbours(node):
@@ -237,9 +261,54 @@ class Graph:
             print("{} - {}".format(u.value, v.value))
 
         if show_tree:
-            self.BFS_show_tree(BFS_tree)
+            self.BDFS_show_tree(BFS_tree)
 
         return BFS_tree
+
+    """
+        DFS -- depth first search
+    """
+
+    def DFS_iterative_basic(self, start: Node, show_tree: bool = False):
+        DFS_tree: List[Tuple[Node, Node]] = []
+
+        # initialization
+        for each in self.get_nodes():
+            each.visited = False
+
+        # create stack
+        stack = LifoQueue()
+        stack.put(start)
+
+        # main loop
+        while not stack.empty():
+            node = stack.get()
+            # print("popping {} with {}".format(node.value, node.visited))
+            if not node.visited:
+                node.visited = True
+                # print("{} with {}".format(node.value, node.visited))
+                for each in self.get_neighbours(node):
+                    if not each.visited:
+                        # print("from {} to {}".format(node.value, each.value))
+                        DFS_tree.append((node, each))
+                        stack.put(each)
+
+        for u, v in DFS_tree:
+            print("{} - {}".format(u.value, v.value))
+
+        if show_tree:
+            self.BDFS_show_tree(DFS_tree)
+
+        return DFS_tree
+
+    def DFS_iterative_attributes(self):
+        pass
+
+    def DFS_recursive_basic(self):
+        pass
+
+    def DFS_recursive_attributes(self):
+        pass
 
 
 graph = Graph(True)
@@ -275,7 +344,8 @@ graph.visualize()
 # print(graph.get_neighbours(node_00))
 
 graph.BFS_basic(node_01, True)
-# graph.BFS_attributes(node_01, True)
+graph.BFS_attributes(node_01, True)
+graph.DFS_iterative_basic(node_01, True)
 
 # graph = Graph(False)
 # graph.add_node(1)
