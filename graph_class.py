@@ -128,7 +128,7 @@ class Graph:
     def visualize(self, node_colors=None, BDFS_tree=False, BDFS_edges=None, title="Graph"):
         # layout of the graph
         pos = nx.circular_layout(self.__G)
-        # pos = nx.spring_layout(self.__G)
+        # pos = nx.tight_layout(self.__G)
 
         plt.title(title)
 
@@ -162,6 +162,7 @@ class Graph:
             edge_labels = dict([((u, v), d["weight"]) for u, v, d in self.__G.edges(data=True)])
             nx.draw_networkx_edge_labels(self.__G, pos, edge_labels=edge_labels, label_pos=.66)
 
+        plt.tight_layout()
         plt.show()
 
     def visualize_traverse(self, title):
@@ -173,10 +174,23 @@ class Graph:
         BFS -- breadth first search
     """
 
-    def visualize_BDFS_tree(self, BDFS_edges, title):
+    def visualize_tree(self, BDFS_edges, title):
         self.visualize(BDFS_tree=True, BDFS_edges=BDFS_edges, title=title)
 
-    def BDFS_show_tree(self, BDFS_tree: List[Tuple[Node, Node]], title):
+    def show_traverse_step_by_step(self, BDFS_tree: List[Tuple[Node, Node]], title):
+        for u, v in BDFS_tree:
+            data = self.G.get_edge_data(u, v)
+            self.G.remove_edge(u, v)
+            self.G.add_edge(u, v, color="deeppink", weight=data["weight"])
+
+            self.visualize_traverse(title)
+
+        for u, v in BDFS_tree:
+            data = self.G.get_edge_data(u, v)
+            self.G.remove_edge(u, v)
+            self.G.add_edge(u, v, color="black", weight=data["weight"])
+
+    def show_traverse_tree(self, BDFS_tree: List[Tuple[Node, Node]], title):
         """
         Changes the colour of each edge that is in the BFS tree
         (to pink colour, because pink (viva magenta) is the colour of the year 2023)
@@ -188,13 +202,12 @@ class Graph:
         :return: None
         """
         for u, v in BDFS_tree:
-            # print("from {} to {}".format(u.value, v.value))
             data = self.G.get_edge_data(u, v)
             self.G.remove_edge(u, v)
             self.G.add_edge(u, v, color="deeppink", weight=data["weight"])
 
-            self.visualize_traverse(title)
-        self.visualize_BDFS_tree(BDFS_tree, title)
+        self.visualize_traverse(title)
+        self.visualize_tree(BDFS_tree, title)
 
         for u, v in BDFS_tree:
             data = self.G.get_edge_data(u, v)
@@ -231,7 +244,7 @@ class Graph:
         #     print("{} - {}".format(u.value, v.value))
 
         if show_tree:
-            self.BDFS_show_tree(BFS_tree, "BFS - basic")
+            self.show_traverse_tree(BFS_tree, "BFS - basic")
 
         return BFS_tree
 
@@ -286,7 +299,7 @@ class Graph:
         #     print("{} - {}".format(u.value, v.value))
 
         if show_tree:
-            self.BDFS_show_tree(BFS_tree, "BFS - attributes")
+            self.show_traverse_tree(BFS_tree, "BFS - attributes")
 
         return BFS_tree
 
@@ -311,37 +324,32 @@ class Graph:
         # initialization
         for each in self.get_nodes():
             each.visited = False
+            each.pi = None
 
         # create stack
         stack = LifoQueue()
         stack.put(start)
-        # node = None
-        # old_node = None
-        # end_node = False
 
         # main loop
         while not stack.empty():
 
-            # if node:
-            #     old_node = node
             node = stack.get()
-            # if old_node:
-            #     print("from {} to {}".format(old_node.value, node.value))
-            #     DFS_tree.append((old_node, node))
 
             if not node.visited:
+                if node != start:
+                    DFS_tree.append((node.pi, node))
+                    print("from {} to {}".format(node.pi.value, node.value))
                 node.visited = True
-                # end_node = False
                 for each in self.get_neighbours(node):
                     if not each.visited:
+                        each.pi = node  # set predecessor
                         stack.put(each)
-                        # end_node = True
 
-        # for u, v in DFS_tree:
-        #     print("{} - {}".format(u.value, v.value))
+        for u, v in DFS_tree:
+            print("{} - {}".format(u.value, v.value))
 
         if show_tree:
-            self.BDFS_show_tree(DFS_tree, "DFS - basic iterative")
+            self.show_traverse_tree(DFS_tree, "DFS - basic iterative")
 
         return DFS_tree
 
@@ -405,7 +413,7 @@ class Graph:
         #     print("{} - {}".format(u.value, v.value))
 
         if show_tree:
-            self.BDFS_show_tree(dijkstra_tree, "Dijkstra")
+            self.show_traverse_tree(dijkstra_tree, "Dijkstra")
 
         return dijkstra_tree
 
