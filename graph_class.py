@@ -1,6 +1,5 @@
 import itertools
 import math
-import queue
 from typing import Tuple, List
 
 import graphviz
@@ -9,7 +8,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import scipy as sp
 import os
-from queue import Queue, LifoQueue, PriorityQueue
+from queue import Queue, LifoQueue
 from graphviz import Digraph
 
 # node labels:
@@ -23,7 +22,9 @@ BLACK = "black"
 
 
 class Node:
-    index_iter = itertools.count(start=0)
+    iterator = [_ for _ in range(10)]
+    # index_iter = itertools.count(start=0)
+    index_iter = itertools.cycle(iterator)
 
     def __init__(self, value):
         self.index = next(Node.index_iter)
@@ -38,6 +39,15 @@ class Node:
 
     def __lt__(self, other):
         return self.distance < other.distance
+
+
+def relax_edge(from_node, to_node, value, tree):
+    to_node.distance = value
+    to_node.pi = from_node
+    for s, t in tree:
+        if t == to_node:
+            tree.remove((s, t))
+    tree.append((from_node, to_node))
 
 
 class Graph:
@@ -115,9 +125,12 @@ class Graph:
     def visualize_graphviz(self):
         print(self.__G_graphviz.source)
 
-    def visualize(self, node_colors=None, BDFS_tree=False, BDFS_edges=None):
-        # layout of  the graph
+    def visualize(self, node_colors=None, BDFS_tree=False, BDFS_edges=None, title="Graph"):
+        # layout of the graph
         pos = nx.circular_layout(self.__G)
+        # pos = nx.spring_layout(self.__G)
+
+        plt.title(title)
 
         # filter edges
         if BDFS_tree:
@@ -148,38 +161,45 @@ class Graph:
         else:
             edge_labels = dict([((u, v), d["weight"]) for u, v, d in self.__G.edges(data=True)])
             nx.draw_networkx_edge_labels(self.__G, pos, edge_labels=edge_labels, label_pos=.66)
+
         plt.show()
 
-    def visualize_traverse(self):
+    def visualize_traverse(self, title):
         node_colors = "deeppink"
 
-        self.visualize(node_colors)
+        self.visualize(node_colors=node_colors, title=title)
 
     """
         BFS -- breadth first search
     """
 
-    def visualize_BDFS_tree(self, BDFS_edges):
-        self.visualize(BDFS_tree=True, BDFS_edges=BDFS_edges)
+    def visualize_BDFS_tree(self, BDFS_edges, title):
+        self.visualize(BDFS_tree=True, BDFS_edges=BDFS_edges, title=title)
 
-    def BDFS_show_tree(self, BDFS_tree: List[Tuple[Node, Node]]):
+    def BDFS_show_tree(self, BDFS_tree: List[Tuple[Node, Node]], title):
         """
         Changes the colour of each edge that is in the BFS tree
         (to pink colour, because pink (viva magenta) is the colour of the year 2023)
 
         Calls two functions for visualizing traverse of BFS algorithm and resulting BFS tree.
 
+        :param title: title of the graph
         :param BDFS_tree: list of tuples, each tuple contains two nodes that creates edge
         :return: None
         """
         for u, v in BDFS_tree:
-            print("from {} to {}".format(u.value, v.value))
+            # print("from {} to {}".format(u.value, v.value))
             data = self.G.get_edge_data(u, v)
             self.G.remove_edge(u, v)
             self.G.add_edge(u, v, color="deeppink", weight=data["weight"])
 
-        self.visualize_traverse()
-        self.visualize_BDFS_tree(BDFS_tree)
+            self.visualize_traverse(title)
+        self.visualize_BDFS_tree(BDFS_tree, title)
+
+        for u, v in BDFS_tree:
+            data = self.G.get_edge_data(u, v)
+            self.G.remove_edge(u, v)
+            self.G.add_edge(u, v, color="black", weight=data["weight"])
 
     def BFS_basic(self, start: Node, show_tree: bool = False):
         """
@@ -207,17 +227,17 @@ class Graph:
                     each.visited = True
                     queue.put(each)
 
-        for u, v in BFS_tree:
-            print("{} - {}".format(u.value, v.value))
+        # for u, v in BFS_tree:
+        #     print("{} - {}".format(u.value, v.value))
 
         if show_tree:
-            self.BDFS_show_tree(BFS_tree)
+            self.BDFS_show_tree(BFS_tree, "BFS - basic")
 
         return BFS_tree
 
     def BFS_attributes(self, start: Node, show_tree: bool = False):
         """
-        Traverse a graph  with breadth first search (BFS) from starting node.
+        Traverse a graph with breadth first search (BFS) from starting node.
 
         Both for directed and undirected graphs.
         On weighted graphs counts number of edges from starting node to the actual node, not the shortest path.
@@ -262,11 +282,11 @@ class Graph:
                     queue.put(each)
             node.color = BLACK
 
-        for u, v in BFS_tree:
-            print("{} - {}".format(u.value, v.value))
+        # for u, v in BFS_tree:
+        #     print("{} - {}".format(u.value, v.value))
 
         if show_tree:
-            self.BDFS_show_tree(BFS_tree)
+            self.BDFS_show_tree(BFS_tree, "BFS - attributes")
 
         return BFS_tree
 
@@ -275,6 +295,17 @@ class Graph:
     """
 
     def DFS_iterative_basic(self, start: Node, show_tree: bool = False):
+        """
+        Traverses graph with depth first search (DFS) from starting node.
+
+        Both for directed and undirected graphs.
+
+        Basic iterative version of DFS, uses only attribute visited (state of exploring nodes).
+
+        :param start: starting node
+        :param show_tree: True to visualize and show DFS tree, False otherwise
+        :return: DFS tree of predecessors (in this format: List[Tuple[Node, Node]])
+        """
         DFS_tree: List[Tuple[Node, Node]] = []
 
         # initialization
@@ -284,22 +315,33 @@ class Graph:
         # create stack
         stack = LifoQueue()
         stack.put(start)
+        # node = None
+        # old_node = None
+        # end_node = False
 
         # main loop
         while not stack.empty():
+
+            # if node:
+            #     old_node = node
             node = stack.get()
+            # if old_node:
+            #     print("from {} to {}".format(old_node.value, node.value))
+            #     DFS_tree.append((old_node, node))
+
             if not node.visited:
                 node.visited = True
+                # end_node = False
                 for each in self.get_neighbours(node):
                     if not each.visited:
-                        DFS_tree.append((node, each))
                         stack.put(each)
+                        # end_node = True
 
-        for u, v in DFS_tree:
-            print("{} - {}".format(u.value, v.value))
+        # for u, v in DFS_tree:
+        #     print("{} - {}".format(u.value, v.value))
 
         if show_tree:
-            self.BDFS_show_tree(DFS_tree)
+            self.BDFS_show_tree(DFS_tree, "DFS - basic iterative")
 
         return DFS_tree
 
@@ -316,21 +358,21 @@ class Graph:
         Dijkstra´s algorithm
     """
 
-    def relax_edge(self, from_node, to_node, value, tree):
-        to_node.distance = value
-        to_node.pi = from_node
-        for s, t in tree:
-            if t == to_node:
-                tree.remove((s, t))
-        tree.append((from_node, to_node))
-
     def dijkstra_algorithm(self, start: Node, show_tree: bool = False):
+        """
+        Solves shortest path problem from given starting node to all other vertices.
+        Uses priority queue (heap).
+
+        :param start: starting node
+        :param show_tree: True to visualize and show dijkstra tree, False otherwise
+        :return: Dijkstra tree of predecessors (in this format: List[Tuple[Node, Node]])
+        """
         dijkstra_tree: List[Tuple[Node, Node]] = []
 
         # queue
         q = []
 
-        # visited nodes
+        # set of visited nodes
         S = []
 
         # initialization
@@ -343,9 +385,8 @@ class Graph:
 
         # main loop
         while q:
-            # extract min
+            # extract min & add to visited nodes
             prio, node = hq.heappop(q)
-            # add to visited nodes
             S.append(node)
 
             # all neighbours
@@ -356,59 +397,57 @@ class Graph:
 
                 # relax edge condition
                 if node.distance + self.adj_matrix()[node.index, each.index] < each.distance:
-                    self.relax_edge(node, each, node.distance + self.adj_matrix()[node.index, each.index],
-                                    dijkstra_tree)
+                    relax_edge(node, each, node.distance + self.adj_matrix()[node.index, each.index],
+                               dijkstra_tree)
                     hq.heappush(q, (each.distance, each))
 
-        for u, v in dijkstra_tree:
-            print("{} - {}".format(u.value, v.value))
+        # for u, v in dijkstra_tree:
+        #     print("{} - {}".format(u.value, v.value))
 
         if show_tree:
-            self.BDFS_show_tree(dijkstra_tree)
+            self.BDFS_show_tree(dijkstra_tree, "Dijkstra")
 
         return dijkstra_tree
 
-
-graph = Graph(True)
-node_00 = Node("Zlin")
-node_01 = Node("Prague")
-node_02 = Node("Brno")
-node_03 = Node(3)
-node_04 = Node(4)
-node_05 = Node(5)
-node_06 = Node(6)
-
-graph.add_node(node_00)
-graph.add_node(node_01)
-graph.add_node(node_02)
-graph.add_node(node_03)
-graph.add_node(node_04)
-graph.add_node(node_05)
-graph.add_node(node_06)
-
-graph.add_edge(node_00, node_01, 10)
-graph.add_edge(node_01, node_02, 10)
-graph.add_edge(node_01, node_03, 3)
-graph.add_edge(node_02, node_05, 5)
-graph.add_edge(node_02, node_06, 12)
-graph.add_edge(node_03, node_04, 4)
-graph.add_edge(node_04, node_05, 6)
-graph.add_edge(node_05, node_02, 2)
-graph.add_edge(node_06, node_01, 3)
-graph.add_edge(node_06, node_04, 7)
-# graph.print_adj_matrix()
-graph.visualize()
+# graph = Graph(True)
+# node_00 = Node("Zlin")
+# node_01 = Node("Prague")
+# node_02 = Node("Brno")
+# node_03 = Node(3)
+# node_04 = Node(4)
+# node_05 = Node(5)
+# node_06 = Node(6)
+#
+# graph.add_node(node_00)
+# graph.add_node(node_01)
+# graph.add_node(node_02)
+# graph.add_node(node_03)
+# graph.add_node(node_04)
+# graph.add_node(node_05)
+# graph.add_node(node_06)
+#
+# graph.add_edge(node_00, node_01, 10)
+# graph.add_edge(node_01, node_02, 20)
+# graph.add_edge(node_01, node_03, 1)
+# graph.add_edge(node_02, node_05, 5)
+# graph.add_edge(node_02, node_06, 12)
+# graph.add_edge(node_03, node_04, 1)
+# graph.add_edge(node_04, node_05, 6)
+# graph.add_edge(node_05, node_02, 2)
+# graph.add_edge(node_06, node_01, 3)
+# graph.add_edge(node_06, node_04, 7)
+# graph.visualize()
 # print(graph.get_neighbours(node_01))
 # print(graph.get_neighbours(node_06))
 # print(graph.get_neighbours(node_00))
 
 # graph.BFS_basic(node_01, True)
-# graph.BFS_attributes(node_01, True)
+# graph.BFS_attributes(node_02, True)
 # graph.DFS_iterative_basic(node_01, True)
 
-graph.dijkstra_algorithm(node_01, True)
-for node in graph.get_nodes():
-    print("{} with {}".format(node.value, node.distance))
+# graph.dijkstra_algorithm(node_02, True)
+# for node in graph.get_nodes():
+#     print("{} with {}".format(node.value, node.distance))
 
 # graph = Graph(False)
 # graph.add_node(1)
