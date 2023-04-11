@@ -353,6 +353,12 @@ class Graph:
 
         return DFS_tree
 
+    def get_white_neighbour(self, node):
+        for each in self.get_neighbours(node):
+            if each.color == WHITE:
+                return each
+        return None
+
     def DFS_iterative_attributes(self, start: Node, show_tree: bool = False):
         DFS_tree: List[Tuple[Node, Node]] = []
 
@@ -366,7 +372,6 @@ class Graph:
 
         # create stack
         stack = LifoQueue()
-
         stack.put(start)
 
         # time start
@@ -378,27 +383,21 @@ class Graph:
         while not stack.empty():
 
             node = stack.get()
-            if node.color == WHITE:
-                node.color = GREY
 
             if node != start:
                 DFS_tree.append((node.pi, node))
 
-            white_neighbours = 0
-            time += 1
-            # neighbours
-            for each in self.get_neighbours(node):
-                if each.color == WHITE:
-                    white_neighbours += 1
-                    stack.put(node)
-                    stack.put(each)
-                    each.pi = node
-                    each.discovery_time = time
-
-            # if all neighbours have been already visited
-            if white_neighbours == 0 and node.color != BLACK:
+            neighbour = self.get_white_neighbour(node)
+            if neighbour is not None:
+                stack.put(node)
+                stack.put(neighbour)
+                neighbour.color = GREY
+                neighbour.pi = node
+                time += 1
+                neighbour.discovery_time = time
+            else:
                 node.color = BLACK
-                # time += 1
+                time += 1
                 node.finishing_time = time
 
         # for u, v in DFS_tree:
@@ -409,6 +408,63 @@ class Graph:
             # self.show_traverse_tree(DFS_tree, "DFS - attributes iterative")
 
         return DFS_tree
+
+    # def DFS_iterative_attributes(self, start: Node, show_tree: bool = False):
+    #     DFS_tree: List[Tuple[Node, Node]] = []
+    #
+    #     # initialization
+    #     time = 0
+    #     for each in self.get_nodes():
+    #         each.pi = None
+    #         each.color = WHITE
+    #         each.discovery_time = math.inf
+    #         each.finishing_time = math.inf
+    #
+    #     # create stack
+    #     stack = LifoQueue()
+    #
+    #     stack.put(start)
+    #
+    #     # time start
+    #     time += 1
+    #     start.color = GREY
+    #     start.discovery_time = time
+    #
+    #     # main loop
+    #     while not stack.empty():
+    #
+    #         node = stack.get()
+    #         if node.color == WHITE:
+    #             node.color = GREY
+    #
+    #         if node != start:
+    #             DFS_tree.append((node.pi, node))
+    #
+    #         white_neighbours = 0
+    #         time += 1
+    #         # neighbours
+    #         for each in self.get_neighbours(node):
+    #             if each.color == WHITE:
+    #                 white_neighbours += 1
+    #                 stack.put(node)
+    #                 stack.put(each)
+    #                 each.pi = node
+    #                 each.discovery_time = time
+    #
+    #         # if all neighbours have been already visited
+    #         if white_neighbours == 0 and node.color != BLACK:
+    #             node.color = BLACK
+    #             # time += 1
+    #             node.finishing_time = time
+    #
+    #     # for u, v in DFS_tree:
+    #     #     print("{} - {}".format(u.value, v.value))
+    #
+    #     if show_tree:
+    #         self.show_traverse_step_by_step(DFS_tree, "DFS - attributes iterative")
+    #         # self.show_traverse_tree(DFS_tree, "DFS - attributes iterative")
+    #
+    #     return DFS_tree
 
     def DFS_recursive_basic(self):
         pass
