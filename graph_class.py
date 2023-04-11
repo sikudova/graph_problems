@@ -367,10 +367,7 @@ class Graph:
         # create stack
         stack = LifoQueue()
 
-        fake_stack = []
-
         stack.put(start)
-        fake_stack.append(start)
 
         # time start
         time += 1
@@ -381,30 +378,27 @@ class Graph:
         while not stack.empty():
 
             node = stack.get()
-            node.color = GREY
+            if node.color == WHITE:
+                node.color = GREY
 
             if node != start:
                 DFS_tree.append((node.pi, node))
-                print("from {} to {}".format(node.pi.value, node.value))
 
             white_neighbours = 0
-
+            time += 1
             # neighbours
             for each in self.get_neighbours(node):
                 if each.color == WHITE:
                     white_neighbours += 1
                     stack.put(node)
                     stack.put(each)
-                    # mark neighbour as visited ↓
-                    # each.color = GREY
                     each.pi = node
-                    time += 1
                     each.discovery_time = time
 
             # if all neighbours have been already visited
-            if white_neighbours == 0:
+            if white_neighbours == 0 and node.color != BLACK:
                 node.color = BLACK
-                time += 1
+                # time += 1
                 node.finishing_time = time
 
         # for u, v in DFS_tree:
