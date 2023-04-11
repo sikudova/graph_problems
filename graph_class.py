@@ -353,8 +353,68 @@ class Graph:
 
         return DFS_tree
 
-    def DFS_iterative_attributes(self):
-        pass
+    def DFS_iterative_attributes(self, start: Node, show_tree: bool = False):
+        DFS_tree: List[Tuple[Node, Node]] = []
+
+        # initialization
+        time = 0
+        for each in self.get_nodes():
+            each.pi = None
+            each.color = WHITE
+            each.discovery_time = math.inf
+            each.finishing_time = math.inf
+
+        # create stack
+        stack = LifoQueue()
+
+        fake_stack = []
+
+        stack.put(start)
+        fake_stack.append(start)
+
+        # time start
+        time += 1
+        start.color = GREY
+        start.discovery_time = time
+
+        # main loop
+        while not stack.empty():
+
+            node = stack.get()
+            node.color = GREY
+
+            if node != start:
+                DFS_tree.append((node.pi, node))
+                print("from {} to {}".format(node.pi.value, node.value))
+
+            white_neighbours = 0
+
+            # neighbours
+            for each in self.get_neighbours(node):
+                if each.color == WHITE:
+                    white_neighbours += 1
+                    stack.put(node)
+                    stack.put(each)
+                    # mark neighbour as visited ↓
+                    # each.color = GREY
+                    each.pi = node
+                    time += 1
+                    each.discovery_time = time
+
+            # if all neighbours have been already visited
+            if white_neighbours == 0:
+                node.color = BLACK
+                time += 1
+                node.finishing_time = time
+
+        # for u, v in DFS_tree:
+        #     print("{} - {}".format(u.value, v.value))
+
+        if show_tree:
+            self.show_traverse_step_by_step(DFS_tree, "DFS - attributes iterative")
+            # self.show_traverse_tree(DFS_tree, "DFS - attributes iterative")
+
+        return DFS_tree
 
     def DFS_recursive_basic(self):
         pass
@@ -452,6 +512,7 @@ class Graph:
 # graph.BFS_basic(node_01, True)
 # graph.BFS_attributes(node_02, True)
 # graph.DFS_iterative_basic(node_01, True)
+# graph.DFS_iterative_attributes(node_01, True)
 
 # graph.dijkstra_algorithm(node_02, True)
 # for node in graph.get_nodes():
