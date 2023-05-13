@@ -510,8 +510,7 @@ class Graph:
         Bellman-Ford algorithm
     """
 
-    def bellman_ford(self, start: Node, show_tree: bool = False, step_by_step: bool = False) -> bool:
-        bellman_ford_tree: List[Tuple[Node, Node]] = []
+    def bellman_ford(self, start: Node, step_by_step: bool = False) -> bool:
 
         # initialization
         for each in self.get_nodes():
@@ -526,16 +525,13 @@ class Graph:
                 if v.distance > u.distance + self.adj_matrix()[u.index, v.index]:
                     v.distance = u.distance + self.adj_matrix()[u.index, v.index]
                     v.pi = u
+                if step_by_step:
+                    self.show_traverse_step_by_step_during(u, v, "Bellman Ford", 3)
 
         # checking for negative weighted cycles
         for u, v in self.get_edges():
             if v.distance > u.distance + self.adj_matrix()[u.index, v.index]:
                 return False
-
-        # if step_by_step:
-        #     self.show_traverse_step_by_step(bellman_ford_tree, "Bellman Ford")
-        # if show_tree:
-        #     self.show_traverse_tree(bellman_ford_tree, "Bellman Ford (traverse)")
 
         return True
 
