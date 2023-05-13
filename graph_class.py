@@ -155,19 +155,19 @@ class Graph:
 
         if node_colors is None:
             node_colors = ["deeppink" if u.visited else "white" for u in self.G.nodes()]
-            # node_colors = ["white" for _ in self.G.nodes()]
-            # node_colors = ["deeppink" for _ in self.G.nodes()]
 
+        # draw
         nx.draw(self.G, pos, edgelist=edges, labels=node_labels, with_labels=True, edge_color=edge_colors,
                 node_color=node_colors, edgecolors='black', font_color="black", width=edge_width,
                 arrows=self.__directed, node_size=700)
 
         if self.__directed:
             nx.draw_networkx_edge_labels(self.__G, pos,
-                                         edge_labels={(u, v): d for u, v, d in self.__G.edges(data="weight")},
-                                         label_pos=.66, **options_edges)
+                                         edge_labels={(u, v): d if (u, v) in edges else "" for u, v, d in
+                                                      self.__G.edges(data="weight")}, label_pos=.66, **options_edges)
         else:
-            edge_labels = dict([((u, v), d["weight"]) for u, v, d in self.__G.edges(data=True)])
+            edge_labels = {
+                (u, v): d if (u, v) in edges else "" for u, v, d in self.__G.edges(data="weight")}
             nx.draw_networkx_edge_labels(self.__G, pos, edge_labels=edge_labels, label_pos=.66)
 
         plt.tight_layout()
