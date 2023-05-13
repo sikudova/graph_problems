@@ -127,10 +127,10 @@ class Graph:
         visualizing graph
     """
 
-    def visualize_graphviz(self):
+    def visualize_graphviz(self) -> None:
         print(self.__G_graphviz.source)
 
-    def visualize(self, node_colors=None, traverse_tree=False, traverse_edges=None, title="Graph"):
+    def visualize(self, node_colors=None, traverse_tree=False, traverse_edges=None, title: str = "Graph") -> None:
         # layout of the graph
         pos = nx.circular_layout(self.__G)
         # pos = nx.tight_layout(self.__G)
@@ -170,7 +170,7 @@ class Graph:
         plt.tight_layout()
         plt.show()
 
-    def visualize_traverse(self, title):
+    def visualize_traverse(self, title) -> None:
         node_colors = "deeppink"
 
         self.visualize(node_colors=node_colors, title=title)
@@ -179,10 +179,10 @@ class Graph:
         BFS -- breadth first search
     """
 
-    def visualize_tree(self, BDFS_edges, title):
-        self.visualize(traverse_tree=True, traverse_edges=BDFS_edges, title=title)
+    def visualize_tree(self, traverse_edges, title: str) -> None:
+        self.visualize(traverse_tree=True, traverse_edges=traverse_edges, title=title)
 
-    def show_traverse_step_by_step(self, tree_traverse: List[Tuple[Node, Node]], title: str):
+    def show_traverse_step_by_step(self, tree_traverse: List[Tuple[Node, Node]], title: str) -> None:
         for u, v in tree_traverse:
             data = self.G.get_edge_data(u, v)
             self.G.remove_edge(u, v)
@@ -195,9 +195,7 @@ class Graph:
             self.G.remove_edge(u, v)
             self.G.add_edge(u, v, color="black", weight=data["weight"])
 
-        # self.visualize_tree(tree_traverse, title=title + " (tree)")
-
-    def show_traverse_tree(self, tree_traverse: List[Tuple[Node, Node]], title):
+    def show_traverse_tree(self, tree_traverse: List[Tuple[Node, Node]], title) -> None:
         """
         Changes the colour of each edge that is in the BFS tree
         (to pink colour, because pink (viva magenta) is the colour of the year 2023)
@@ -221,7 +219,7 @@ class Graph:
             self.G.remove_edge(u, v)
             self.G.add_edge(u, v, color="black", weight=data["weight"])
 
-    def BFS_basic(self, start: Node, show_tree: bool = False, step_by_step: bool = False):
+    def BFS_basic(self, start: Node, show_tree: bool = False, step_by_step: bool = False) -> None:
         """
         Traverse a graph with breadth first search (BFS) from starting node.
         Sets visited attribute of nodes to True or False.
@@ -229,7 +227,7 @@ class Graph:
         :param start: starting node
         :param show_tree: True to visualize and show BFS tree, False otherwise
         :param step_by_step: True to show step by step traverse (in more images - one image for one step), False otherwise
-        :return: BFS tree (in this format: List[Tuple[Node, Node]])
+        :return: none
         """
         BFS_tree: List[Tuple[Node, Node]] = []
 
@@ -248,21 +246,13 @@ class Graph:
                     each.visited = True
                     queue.put(each)
 
-        # for u, v in BFS_tree:
-        #     print("{} - {}".format(u.value, v.value))
-
-        # if show_tree:
-        #     if step_by_step:
-        #         self.show_traverse_step_by_step(BFS_tree, "BFS - basic")
-        #     self.show_traverse_tree(BFS_tree, "BFS - basic (tree)")
-
         # show traverse steps & BFS tree
         if step_by_step:
             self.show_traverse_step_by_step(BFS_tree, "BFS - basic")
         if show_tree:
             self.show_traverse_tree(BFS_tree, "BFS - basic (tree)")
 
-    def BFS_attributes(self, start: Node, show_tree: bool = False, step_by_step: bool = False):
+    def BFS_attributes(self, start: Node, show_tree: bool = False, step_by_step: bool = False) -> None:
         """
         Traverse a graph with breadth first search (BFS) from starting node.
 
@@ -273,12 +263,12 @@ class Graph:
         Works with 3 attributes:
             -  color (status of exploring),
             -  distance (number of edges from starting node),
-            -  pi (predecessor)
+            -  pi (predecessor).
 
         :param start: starting node
         :param show_tree: True to visualize and show BFS tree, False otherwise
         :param step_by_step: True to show step by step traverse (in more images - one image for one step), False otherwise
-        :return: BFS tree (in this format: List[Tuple[Node, Node]])
+        :return: none
         """
         BFS_tree: List[Tuple[Node, Node]] = []
 
@@ -309,12 +299,7 @@ class Graph:
                     queue.put(each)
             node.color = BLACK
 
-        # for u, v in BFS_tree:
-        #     print("{} - {}".format(u.value, v.value))
-
-        # if show_tree:
-        #     self.show_traverse_tree(BFS_tree, "BFS - attributes")
-
+        # show traverse steps & BFS tree
         if step_by_step:
             self.show_traverse_step_by_step(BFS_tree, "BFS - attributes")
         if show_tree:
@@ -324,20 +309,22 @@ class Graph:
         DFS -- depth first search
     """
 
-    def DFS_iterative_basic(self, start: Node, show_tree: bool = False):
+    def DFS_iterative_basic(self, start: Node, show_tree: bool = False, step_by_step: bool = False) -> None:
         """
         Traverses graph with depth first search (DFS) from starting node.
 
         Both for directed and undirected graphs.
+        Both for weighted and unweighted graphs.
 
         Basic iterative version of DFS, uses only attribute visited (state of exploring nodes).
 
         :param start: starting node
         :param show_tree: True to visualize and show DFS tree, False otherwise
-        :return: DFS tree of predecessors (in this format: List[Tuple[Node, Node]])
+        :param step_by_step: True to show step by step traverse (in more images - one image for one step), False otherwise
+        :return: none
         """
 
-        self.__DFS_step = 0
+        # self.__DFS_step = 0
 
         DFS_tree: List[Tuple[Node, Node]] = []
 
@@ -358,20 +345,17 @@ class Graph:
             if not node.visited:
                 if node != start:
                     DFS_tree.append((node.pi, node))
-                    # print("from {} to {}".format(node.pi.value, node.value))
                 node.visited = True
                 for each in self.get_neighbours(node):
                     if not each.visited:
                         each.pi = node  # set predecessor
                         stack.put(each)
 
-        # for u, v in DFS_tree:
-        #     print("{} - {}".format(u.value, v.value))
-
+        # show traverse steps & BFS tree
+        if step_by_step:
+            self.show_traverse_step_by_step(DFS_tree, "DFS - basic")
         if show_tree:
-            self.show_traverse_tree(DFS_tree, "DFS - basic iterative")
-
-        return DFS_tree
+            self.show_traverse_tree(DFS_tree, "DFS - basic (tree)")
 
     def get_white_neighbour(self, node):
         for each in self.get_neighbours(node):
@@ -379,9 +363,25 @@ class Graph:
                 return each
         return None
 
-    def DFS_iterative_attributes(self, start: Node, show_tree: bool = False):
+    def DFS_iterative_attributes(self, start: Node, show_tree: bool = False, step_by_step: bool = False) -> None:
+        """
+        Traverses graph with depth first search (DFS) from starting node.
 
-        self.__DFS_step = 0
+        Both for directed and undirected graphs.
+        Both for weighted and unweighted graphs.
+
+        Works with 3 attributes:
+            -  color (status of exploring),
+            -  pi (predecessor),
+            -  discovery_time (when the node is first discovered),
+            -  finishing_time (when the search on the node finishes).
+
+        :param start: starting node
+        :param show_tree: True to visualize and show DFS tree, False otherwise
+        :param step_by_step: True to show step by step traverse (in more images - one image for one step), False otherwise
+        :return: none
+        """
+        # self.__DFS_step = 0
 
         DFS_tree: List[Tuple[Node, Node]] = []
 
@@ -425,14 +425,11 @@ class Graph:
                 time += 1
                 node.finishing_time = time
 
-        # for u, v in DFS_tree:
-        #     print("{} - {}".format(u.value, v.value))
-
+        # show traverse steps & BFS tree
+        if step_by_step:
+            self.show_traverse_step_by_step(DFS_tree, "DFS - attributes")
         if show_tree:
-            self.show_traverse_step_by_step(DFS_tree, "DFS - attributes iterative")
-            # self.show_traverse_tree(DFS_tree, "DFS - attributes iterative")
-
-        return DFS_tree
+            self.show_traverse_tree(DFS_tree, "DFS - attributes (tree)")
 
     def DFS_recursive_basic(self):
         pass
