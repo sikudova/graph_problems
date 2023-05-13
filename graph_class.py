@@ -19,10 +19,11 @@ from graphviz import Digraph
 WHITE = "white"
 GREY = "grey"
 BLACK = "black"
+NODES_IN_GRAPH = 15
 
 
 class Node:
-    iterator = [_ for _ in range(10)]
+    iterator = [_ for _ in range(NODES_IN_GRAPH)]
     # index_iter = itertools.count(start=0)
     index_iter = itertools.cycle(iterator)
 
@@ -57,6 +58,7 @@ class Graph:
         self.__G = nx.DiGraph() if self.__directed else nx.Graph()
         self.__G_graphviz = Digraph(comment="Graph") if self.__directed else graphviz.Graph(comment="Graph")
         self.__adj_matrix: list[list[int]] = [[0 for _ in range(self.__size)] for _ in range(self.__size)]
+        self.__DFS_step = 0
 
     """
         getters, setters (properties), printing methods
@@ -96,6 +98,9 @@ class Graph:
     def get_nodes(self):
         return self.G.nodes()
 
+    def get_edges(self):
+        return self.G.edges()
+
     """
         adding edges and nodes
     """
@@ -125,7 +130,7 @@ class Graph:
     def visualize_graphviz(self):
         print(self.__G_graphviz.source)
 
-    def visualize(self, node_colors=None, BDFS_tree=False, BDFS_edges=None, title="Graph"):
+    def visualize(self, node_colors=None, traverse_tree=False, traverse_edges=None, title="Graph"):
         # layout of the graph
         pos = nx.circular_layout(self.__G)
         # pos = nx.tight_layout(self.__G)
@@ -133,8 +138,8 @@ class Graph:
         plt.title(title)
 
         # filter edges
-        if BDFS_tree:
-            edges = BDFS_edges
+        if traverse_tree:
+            edges = traverse_edges
         else:
             edges = self.G.edges()
 
@@ -175,22 +180,24 @@ class Graph:
     """
 
     def visualize_tree(self, BDFS_edges, title):
-        self.visualize(BDFS_tree=True, BDFS_edges=BDFS_edges, title=title)
+        self.visualize(traverse_tree=True, traverse_edges=BDFS_edges, title=title)
 
-    def show_traverse_step_by_step(self, BDFS_tree: List[Tuple[Node, Node]], title):
-        for u, v in BDFS_tree:
+    def show_traverse_step_by_step(self, tree_traverse: List[Tuple[Node, Node]], title: str):
+        for u, v in tree_traverse:
             data = self.G.get_edge_data(u, v)
             self.G.remove_edge(u, v)
             self.G.add_edge(u, v, color="deeppink", weight=data["weight"])
 
             self.visualize_traverse(title)
 
-        for u, v in BDFS_tree:
+        for u, v in tree_traverse:
             data = self.G.get_edge_data(u, v)
             self.G.remove_edge(u, v)
             self.G.add_edge(u, v, color="black", weight=data["weight"])
 
-    def show_traverse_tree(self, BDFS_tree: List[Tuple[Node, Node]], title):
+        # self.visualize_tree(tree_traverse, title=title + " (tree)")
+
+    def show_traverse_tree(self, tree_traverse: List[Tuple[Node, Node]], title):
         """
         Changes the colour of each edge that is in the BFS tree
         (to pink colour, because pink (viva magenta) is the colour of the year 2023)
@@ -198,29 +205,30 @@ class Graph:
         Calls two functions for visualizing traverse of BFS algorithm and resulting BFS tree.
 
         :param title: title of the graph
-        :param BDFS_tree: list of tuples, each tuple contains two nodes that creates edge
+        :param tree_traverse: list of tuples, each tuple contains two nodes that creates edge
         :return: None
         """
-        for u, v in BDFS_tree:
+        for u, v in tree_traverse:
             data = self.G.get_edge_data(u, v)
             self.G.remove_edge(u, v)
             self.G.add_edge(u, v, color="deeppink", weight=data["weight"])
 
         self.visualize_traverse(title)
-        self.visualize_tree(BDFS_tree, title)
+        self.visualize_tree(tree_traverse, title)
 
-        for u, v in BDFS_tree:
+        for u, v in tree_traverse:
             data = self.G.get_edge_data(u, v)
             self.G.remove_edge(u, v)
             self.G.add_edge(u, v, color="black", weight=data["weight"])
 
-    def BFS_basic(self, start: Node, show_tree: bool = False):
+    def BFS_basic(self, start: Node, show_tree: bool = False, step_by_step: bool = False):
         """
         Traverse a graph with breadth first search (BFS) from starting node.
         Sets visited attribute of nodes to True or False.
 
         :param start: starting node
         :param show_tree: True to visualize and show BFS tree, False otherwise
+        :param step_by_step: True to show step by step traverse (in more images - one image for one step), False otherwise
         :return: BFS tree (in this format: List[Tuple[Node, Node]])
         """
         BFS_tree: List[Tuple[Node, Node]] = []
@@ -243,12 +251,18 @@ class Graph:
         # for u, v in BFS_tree:
         #     print("{} - {}".format(u.value, v.value))
 
+        # if show_tree:
+        #     if step_by_step:
+        #         self.show_traverse_step_by_step(BFS_tree, "BFS - basic")
+        #     self.show_traverse_tree(BFS_tree, "BFS - basic (tree)")
+
+        # show traverse steps & BFS tree
+        if step_by_step:
+            self.show_traverse_step_by_step(BFS_tree, "BFS - basic")
         if show_tree:
-            self.show_traverse_tree(BFS_tree, "BFS - basic")
+            self.show_traverse_tree(BFS_tree, "BFS - basic (tree)")
 
-        return BFS_tree
-
-    def BFS_attributes(self, start: Node, show_tree: bool = False):
+    def BFS_attributes(self, start: Node, show_tree: bool = False, step_by_step: bool = False):
         """
         Traverse a graph with breadth first search (BFS) from starting node.
 
@@ -263,13 +277,13 @@ class Graph:
 
         :param start: starting node
         :param show_tree: True to visualize and show BFS tree, False otherwise
+        :param step_by_step: True to show step by step traverse (in more images - one image for one step), False otherwise
         :return: BFS tree (in this format: List[Tuple[Node, Node]])
         """
         BFS_tree: List[Tuple[Node, Node]] = []
 
         # initialize attributes of each vertex
         for each in self.get_nodes():
-            print(each.value)
             each.color = WHITE
             each.distance = math.inf
             each.pi = None
@@ -298,10 +312,13 @@ class Graph:
         # for u, v in BFS_tree:
         #     print("{} - {}".format(u.value, v.value))
 
-        if show_tree:
-            self.show_traverse_tree(BFS_tree, "BFS - attributes")
+        # if show_tree:
+        #     self.show_traverse_tree(BFS_tree, "BFS - attributes")
 
-        return BFS_tree
+        if step_by_step:
+            self.show_traverse_step_by_step(BFS_tree, "BFS - attributes")
+        if show_tree:
+            self.show_traverse_tree(BFS_tree, "BFS - attributes (tree)")
 
     """
         DFS -- depth first search
@@ -319,6 +336,9 @@ class Graph:
         :param show_tree: True to visualize and show DFS tree, False otherwise
         :return: DFS tree of predecessors (in this format: List[Tuple[Node, Node]])
         """
+
+        self.__DFS_step = 0
+
         DFS_tree: List[Tuple[Node, Node]] = []
 
         # initialization
@@ -338,15 +358,15 @@ class Graph:
             if not node.visited:
                 if node != start:
                     DFS_tree.append((node.pi, node))
-                    print("from {} to {}".format(node.pi.value, node.value))
+                    # print("from {} to {}".format(node.pi.value, node.value))
                 node.visited = True
                 for each in self.get_neighbours(node):
                     if not each.visited:
                         each.pi = node  # set predecessor
                         stack.put(each)
 
-        for u, v in DFS_tree:
-            print("{} - {}".format(u.value, v.value))
+        # for u, v in DFS_tree:
+        #     print("{} - {}".format(u.value, v.value))
 
         if show_tree:
             self.show_traverse_tree(DFS_tree, "DFS - basic iterative")
@@ -360,6 +380,9 @@ class Graph:
         return None
 
     def DFS_iterative_attributes(self, start: Node, show_tree: bool = False):
+
+        self.__DFS_step = 0
+
         DFS_tree: List[Tuple[Node, Node]] = []
 
         # initialization
@@ -388,6 +411,8 @@ class Graph:
                 DFS_tree.append((node.pi, node))
 
             neighbour = self.get_white_neighbour(node)
+            # if exists edge (node, neighbour) where neighbour.color=white
+            # that means neighbour has not been visited yet
             if neighbour is not None:
                 stack.put(node)
                 stack.put(neighbour)
@@ -408,63 +433,6 @@ class Graph:
             # self.show_traverse_tree(DFS_tree, "DFS - attributes iterative")
 
         return DFS_tree
-
-    # def DFS_iterative_attributes(self, start: Node, show_tree: bool = False):
-    #     DFS_tree: List[Tuple[Node, Node]] = []
-    #
-    #     # initialization
-    #     time = 0
-    #     for each in self.get_nodes():
-    #         each.pi = None
-    #         each.color = WHITE
-    #         each.discovery_time = math.inf
-    #         each.finishing_time = math.inf
-    #
-    #     # create stack
-    #     stack = LifoQueue()
-    #
-    #     stack.put(start)
-    #
-    #     # time start
-    #     time += 1
-    #     start.color = GREY
-    #     start.discovery_time = time
-    #
-    #     # main loop
-    #     while not stack.empty():
-    #
-    #         node = stack.get()
-    #         if node.color == WHITE:
-    #             node.color = GREY
-    #
-    #         if node != start:
-    #             DFS_tree.append((node.pi, node))
-    #
-    #         white_neighbours = 0
-    #         time += 1
-    #         # neighbours
-    #         for each in self.get_neighbours(node):
-    #             if each.color == WHITE:
-    #                 white_neighbours += 1
-    #                 stack.put(node)
-    #                 stack.put(each)
-    #                 each.pi = node
-    #                 each.discovery_time = time
-    #
-    #         # if all neighbours have been already visited
-    #         if white_neighbours == 0 and node.color != BLACK:
-    #             node.color = BLACK
-    #             # time += 1
-    #             node.finishing_time = time
-    #
-    #     # for u, v in DFS_tree:
-    #     #     print("{} - {}".format(u.value, v.value))
-    #
-    #     if show_tree:
-    #         self.show_traverse_step_by_step(DFS_tree, "DFS - attributes iterative")
-    #         # self.show_traverse_tree(DFS_tree, "DFS - attributes iterative")
-    #
-    #     return DFS_tree
 
     def DFS_recursive_basic(self):
         pass
@@ -527,6 +495,32 @@ class Graph:
 
         return dijkstra_tree
 
+    """
+        Bellman-Ford algorithm
+    """
+
+    def bellman_ford(self, start: Node, show_tree: bool = False):
+        bellman_ford_tree: List[Tuple[Node, Node]] = []
+
+        # initialization
+        for each in self.get_nodes():
+            each.distance = math.inf
+            each.pi = None
+
+        start.distance = 0
+
+        for i in range(self.size) - 1:
+            for u, v in self.get_edges():
+                if v.distance > u.distance + self.adj_matrix()[u.index, v.index]:
+                    v.distance = u.distance + self.adj_matrix()[u.index, v.index]
+                    v.pi = u
+
+        for u, v in self.get_edges():
+            if v.distance > u.distance + self.adj_matrix()[u.index, v.index]:
+                return False
+
+        return True
+
 # graph = Graph(True)
 # node_00 = Node("Zlin")
 # node_01 = Node("Prague")
@@ -559,7 +553,7 @@ class Graph:
 # print(graph.get_neighbours(node_06))
 # print(graph.get_neighbours(node_00))
 
-# graph.BFS_basic(node_01, True)
+# graph.BFS_basic(node_01, True, False)
 # graph.BFS_attributes(node_02, True)
 # graph.DFS_iterative_basic(node_01, True)
 # graph.DFS_iterative_attributes(node_01, True)
