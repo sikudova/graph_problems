@@ -151,7 +151,7 @@ class Graph:
         edge_width = [3 if (self.G[u][v]["color"] == "deeppink") else 1 for u, v in edges]
 
         # node settings
-        node_labels = {u: u.value for u in self.G.nodes()}
+        node_labels = {u: (u.value, u.distance) if u.distance else u.value for u in self.G.nodes()}
 
         if node_colors is None:
             node_colors = ["deeppink" if u.visited else "white" for u in self.G.nodes()]
@@ -173,20 +173,6 @@ class Graph:
         plt.tight_layout()
         plt.show()
 
-    def visualize_traverse(self, node_colors=None, title="graph") -> None:
-        if not node_colors:
-            node_colors = "deeppink"
-
-        self.visualize(node_colors=node_colors, title=title)
-        # self.visualize(title=title)
-
-    """
-        BFS -- breadth first search
-    """
-
-    def visualize_tree(self, traverse_edges, title: str) -> None:
-        self.visualize(traverse_tree=True, traverse_edges=traverse_edges, title=title)
-
     def get_node_colors_based_on_alg(self, flag: int):
         match flag:
             case 1:  # visited
@@ -197,20 +183,12 @@ class Graph:
                     for u in self.G.nodes()]
         return ["deeppink" if u.visited else "white" for u in self.G.nodes()]
 
+    """
+        BFS -- breadth first search
+    """
+
     def show_traverse_step_by_step_during(self, from_node: Node, to_node: Node, title: str, flag: int) -> None:
-
-        # match flag:
-        #     case 1:  # visited
-        #         node_colors = ["deeppink" if u.visited else "white" for u in self.G.nodes()]
-        #     case 2:  # attributes color
-        #         node_colors = [
-        #             "gray" if u.color == BLACK else "white" if u.color == WHITE else "lightgray" if u.color == GREY else "deeppink"
-        #             for u in self.G.nodes()]
-        #     case other:  # default
-        #         node_colors = ["deeppink" if u.visited else "white" for u in self.G.nodes()]
-
         self.G[from_node][to_node]["color"] = "deeppink"
-        # self.visualize_traverse(node_colors=node_colors, title=title)
         self.visualize(node_colors=self.get_node_colors_based_on_alg(flag), title=title)
 
     def show_traverse_step_by_step(self, tree_traverse: List[Tuple[Node, Node]], title: str) -> None:
@@ -243,9 +221,7 @@ class Graph:
             self.G.remove_edge(u, v)
             self.G.add_edge(u, v, color="deeppink", weight=data["weight"])
 
-        # self.visualize_traverse(title=title)
         self.visualize(node_colors=self.get_node_colors_based_on_alg(flag), title=title)
-        # self.visualize_tree(tree_traverse, title)
         self.visualize(self.get_node_colors_based_on_alg(flag), traverse_tree=True, traverse_edges=tree_traverse,
                        title=title)
 
@@ -279,10 +255,12 @@ class Graph:
                 if not each.visited:
                     BFS_tree.append((node, each))
                     each.visited = True
+                    # show step by step traverse
                     if step_by_step:
                         self.show_traverse_step_by_step_during(node, each, "BFS - basic", 1)
                     queue.put(each)
 
+        # show tree
         if show_tree:
             self.show_traverse_tree(BFS_tree, "BFS - basic (tree)", 1)
 
@@ -330,16 +308,13 @@ class Graph:
                     each.color = GREY
                     each.distance = node.distance + 1
                     each.pi = node
-                    # if step_by_step:
-                    #     self.show_traverse_step_by_step_during(node, each, "BFS - attributes", 2)
                     queue.put(each)
+                # show step by step traverse
                 if step_by_step:
                     self.show_traverse_step_by_step_during(node, each, "BFS - attributes", 2)
             node.color = BLACK
 
-        # show traverse steps & BFS tree
-        # if step_by_step:
-        #     self.show_traverse_step_by_step(BFS_tree, "BFS - attributes")
+        # show BFS tree
         if show_tree:
             self.show_traverse_tree(BFS_tree, "BFS - attributes (tree)", 2)
 
@@ -362,8 +337,6 @@ class Graph:
         :return: none
         """
 
-        # self.__DFS_step = 0
-
         DFS_tree: List[Tuple[Node, Node]] = []
 
         # initialization
@@ -384,14 +357,15 @@ class Graph:
                 if node != start:
                     DFS_tree.append((node.pi, node))
                 node.visited = True
+                # show step by step traverse
+                if step_by_step and node != start:
+                    self.show_traverse_step_by_step_during(node.pi, node, "DFS - basic", flag=1)
                 for each in self.get_neighbours(node):
                     if not each.visited:
                         each.pi = node  # set predecessor
                         stack.put(each)
 
-        # show traverse steps & BFS tree
-        if step_by_step:
-            self.show_traverse_step_by_step(DFS_tree, "DFS - basic")
+        # show DFS tree
         if show_tree:
             self.show_traverse_tree(DFS_tree, "DFS - basic (tree)", 1)
 
@@ -419,7 +393,6 @@ class Graph:
         :param step_by_step: True to show step by step traverse (in more images - one image for one step), False otherwise
         :return: none
         """
-        # self.__DFS_step = 0
 
         DFS_tree: List[Tuple[Node, Node]] = []
 
@@ -463,9 +436,11 @@ class Graph:
                 time += 1
                 node.finishing_time = time
 
-        # show traverse steps & BFS tree
-        if step_by_step:
-            self.show_traverse_step_by_step(DFS_tree, "DFS - attributes")
+            # show step by step traverse
+            if step_by_step and node != start:
+                self.show_traverse_step_by_step_during(node.pi, node, "DFS - attributes", 2)
+
+        # show DFS tree
         if show_tree:
             self.show_traverse_tree(DFS_tree, "DFS - attributes (tree)", 2)
 
@@ -510,6 +485,7 @@ class Graph:
             # extract min & add to visited nodes
             prio, node = hq.heappop(q)
             S.append(node)
+            node.visited = True
 
             # all neighbours
             for each in self.get_neighbours(node):
@@ -522,12 +498,13 @@ class Graph:
                     relax_edge(node, each, node.distance + self.adj_matrix()[node.index, each.index],
                                dijkstra_tree)
                     hq.heappush(q, (each.distance, each))
+                # show step by step traverse
+                if step_by_step:
+                    self.show_traverse_step_by_step_during(node, each, "Dijkstra", 1)
 
-        # show traverse steps & BFS tree
-        # if step_by_step:
-        #     self.show_traverse_step_by_step(dijkstra_tree, "Dijkstra")
-        # if show_tree:
-        #     self.show_traverse_tree(dijkstra_tree, "Dijkstra (traverse)")
+        # show Dijkstra traverse
+        if show_tree:
+            self.show_traverse_tree(dijkstra_tree, "Dijkstra (traverse)", 1)
 
     """
         Bellman-Ford algorithm
