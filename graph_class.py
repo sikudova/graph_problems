@@ -19,7 +19,7 @@ from graphviz import Digraph
 WHITE = "white"
 GREY = "grey"
 BLACK = "black"
-NODES_IN_GRAPH = 15
+NODES_IN_GRAPH = 10
 
 
 class Node:
@@ -40,6 +40,15 @@ class Node:
 
     def __lt__(self, other):
         return self.distance < other.distance
+
+    def initialize_values(self):
+        self.visited = False
+        self.color = None
+        self.distance = None
+        self.pi = None
+        self.discovery_time = None
+        self.finishing_time = None
+        self.flag = None
 
 
 def relax_edge(from_node, to_node, value, tree):
@@ -124,6 +133,14 @@ class Graph:
         self.__G_graphviz.edge(from_node, to_node, label=weight)
 
     """
+        initialize node values
+    """
+
+    def initialize_node_values(self):
+        for each in self.get_nodes():
+            each.initialize_values()
+
+    """
         visualizing graph
     """
 
@@ -154,7 +171,8 @@ class Graph:
         node_labels = {u: (u.value, u.distance) if u.distance else u.value for u in self.G.nodes()}
 
         if node_colors is None:
-            node_colors = ["deeppink" if u.visited else "white" for u in self.G.nodes()]
+            # node_colors = ["deeppink" if u.visited else "white" for u in self.G.nodes()]
+            node_colors = ["white" for u in self.G.nodes()]
 
         # draw
         nx.draw(self.G, pos, edgelist=edges, labels=node_labels, with_labels=True, edge_color=edge_colors,
@@ -183,26 +201,9 @@ class Graph:
                     for u in self.G.nodes()]
         return ["deeppink" if u.visited else "white" for u in self.G.nodes()]
 
-    """
-        BFS -- breadth first search
-    """
-
     def show_traverse_step_by_step_during(self, from_node: Node, to_node: Node, title: str, flag: int) -> None:
         self.G[from_node][to_node]["color"] = "deeppink"
         self.visualize(node_colors=self.get_node_colors_based_on_alg(flag), title=title)
-
-    def show_traverse_step_by_step(self, tree_traverse: List[Tuple[Node, Node]], title: str) -> None:
-        for u, v in tree_traverse:
-            data = self.G.get_edge_data(u, v)
-            self.G.remove_edge(u, v)
-            self.G.add_edge(u, v, color="deeppink", weight=data["weight"])
-
-            # self.visualize_traverse(title)
-
-        for u, v in tree_traverse:
-            data = self.G.get_edge_data(u, v)
-            self.G.remove_edge(u, v)
-            self.G.add_edge(u, v, color="black", weight=data["weight"])
 
     def show_traverse_tree(self, tree_traverse: List[Tuple[Node, Node]], title, flag: int) -> None:
         """
@@ -230,6 +231,10 @@ class Graph:
             self.G.remove_edge(u, v)
             self.G.add_edge(u, v, color="black", weight=data["weight"])
 
+    """
+        BFS -- breadth first search
+    """
+
     def BFS_basic(self, start: Node, show_tree: bool = False, step_by_step: bool = False) -> None:
         """
         Traverse a graph with breadth first search (BFS) from starting node.
@@ -240,6 +245,9 @@ class Graph:
         :param step_by_step: True to show step by step traverse (in more images - one image for one step), False otherwise
         :return: none
         """
+
+        self.initialize_node_values()
+
         BFS_tree: List[Tuple[Node, Node]] = []
 
         # create queue
@@ -282,6 +290,8 @@ class Graph:
         :param step_by_step: True to show step by step traverse (in more images - one image for one step), False otherwise
         :return: none
         """
+        self.initialize_node_values()
+
         BFS_tree: List[Tuple[Node, Node]] = []
 
         # initialize attributes of each vertex
@@ -336,6 +346,8 @@ class Graph:
         :param step_by_step: True to show step by step traverse (in more images - one image for one step), False otherwise
         :return: none
         """
+
+        self.initialize_node_values()
 
         DFS_tree: List[Tuple[Node, Node]] = []
 
@@ -393,6 +405,8 @@ class Graph:
         :param step_by_step: True to show step by step traverse (in more images - one image for one step), False otherwise
         :return: none
         """
+
+        self.initialize_node_values()
 
         DFS_tree: List[Tuple[Node, Node]] = []
 
@@ -464,6 +478,9 @@ class Graph:
         :param step_by_step: True to show step by step traverse (in more images - one image for one step), False otherwise
         :return: none
         """
+
+        self.initialize_node_values()
+
         dijkstra_tree: List[Tuple[Node, Node]] = []
 
         # queue
@@ -510,9 +527,23 @@ class Graph:
         Bellman-Ford algorithm
     """
 
-    def bellman_ford(self, start: Node, step_by_step: bool = False) -> bool:
+    def delete_colours_visualize(self, title: str):
+        for u, v in self.get_edges():
+            self.G[u][v]["color"] = "black"
+        self.visualize(title=title)
 
+    def bellman_ford(self, start: Node, step_by_step: bool = False) -> bool:
+        """
+        Solves shortest path problem from given starting node to all other vertices.
+        Can be used for graph both with negative and non-negative edge weights.
+
+        :param start:
+        :param step_by_step:
+        :return: True if and only if the graph contains no negative-weight cycles that are
+                 reachable from the source, False otherwise
+        """
         # initialization
+        self.initialize_node_values()
         for each in self.get_nodes():
             each.distance = math.inf
             each.pi = None
@@ -521,6 +552,9 @@ class Graph:
 
         # repeatedly relaxing edges
         for i in range(self.size - 1):
+            if step_by_step:
+                self.delete_colours_visualize("Bellman Ford")
+                print(f"i: {i}")
             for u, v in self.get_edges():
                 if v.distance > u.distance + self.adj_matrix()[u.index, v.index]:
                     v.distance = u.distance + self.adj_matrix()[u.index, v.index]
