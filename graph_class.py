@@ -68,6 +68,7 @@ class Graph:
         self.__G_graphviz = Digraph(comment="Graph") if self.__directed else graphviz.Graph(comment="Graph")
         self.__adj_matrix: list[list[int]] = [[0 for _ in range(self.__size)] for _ in range(self.__size)]
         self.__DFS_step = 0
+        self.__ham_paths = 0
 
     """
         getters, setters (properties), printing methods
@@ -90,8 +91,6 @@ class Graph:
         return len(self.adj_matrix())
 
     def adj_matrix(self):
-        # print(self.G.adjacency())
-        # print(nx.adjacency_matrix(self.G))
         return (nx.adjacency_matrix(self.G)).todense()
 
     def print_adj_matrix(self) -> None:
@@ -210,7 +209,7 @@ class Graph:
         Changes the colour of each edge that is in the BFS tree
         (to pink colour, because pink (viva magenta) is the colour of the year 2023)
 
-        Calls two functions for visualizing traverse of BFS algorithm and resulting BFS tree.
+        Calls two functions for visualizing traverse of algorithm and resulting traverse with important edges.
 
         :param title: title of the graph
         :param tree_traverse: list of tuples, each tuple contains two nodes that creates edge
@@ -218,18 +217,23 @@ class Graph:
         :return: None
         """
         for u, v in tree_traverse:
-            data = self.G.get_edge_data(u, v)
-            self.G.remove_edge(u, v)
-            self.G.add_edge(u, v, color="deeppink", weight=data["weight"])
+            self.G[u][v]["color"] = "deeppink"
 
         self.visualize(node_colors=self.get_node_colors_based_on_alg(flag), title=title)
         self.visualize(self.get_node_colors_based_on_alg(flag), traverse_tree=True, traverse_edges=tree_traverse,
                        title=title)
 
         for u, v in tree_traverse:
-            data = self.G.get_edge_data(u, v)
-            self.G.remove_edge(u, v)
-            self.G.add_edge(u, v, color="black", weight=data["weight"])
+            self.G[u][v]["color"] = "black"
+
+    def __show_hamiltonian_path(self, ham_path):
+        for i in range(1, len(ham_path)):
+            self.G[ham_path[i - 1]][ham_path[i]]["color"] = "deeppink"
+
+        self.visualize(title="Hamiltonian path - brute force")
+
+        for i in range(1, len(ham_path)):
+            self.G[ham_path[i - 1]][ham_path[i]]["color"] = "black"
 
     """
         BFS -- breadth first search
@@ -450,9 +454,9 @@ class Graph:
                 time += 1
                 node.finishing_time = time
 
-            # show step by step traverse
-            if step_by_step and node != start:
-                self.show_traverse_step_by_step_during(node.pi, node, "DFS - attributes", 2)
+                # show step by step traverse
+            if step_by_step and neighbour:  # and node != start:
+                self.show_traverse_step_by_step_during(node, neighbour, "DFS - attributes", 2)
 
         # show DFS tree
         if show_tree:
@@ -569,34 +573,136 @@ class Graph:
 
         return True
 
-# graph = Graph(True)
-# node_00 = Node("Zlin")
-# node_01 = Node("Prague")
-# node_02 = Node("Brno")
-# node_03 = Node(3)
-# node_04 = Node(4)
-# node_05 = Node(5)
-# node_06 = Node(6)
-#
-# graph.add_node(node_00)
-# graph.add_node(node_01)
-# graph.add_node(node_02)
-# graph.add_node(node_03)
-# graph.add_node(node_04)
-# graph.add_node(node_05)
-# graph.add_node(node_06)
-#
-# graph.add_edge(node_00, node_01, 10)
-# graph.add_edge(node_01, node_02, 20)
-# graph.add_edge(node_01, node_03, 1)
-# graph.add_edge(node_02, node_05, 5)
-# graph.add_edge(node_02, node_06, 12)
-# graph.add_edge(node_03, node_04, 1)
-# graph.add_edge(node_04, node_05, 6)
-# graph.add_edge(node_05, node_02, 2)
-# graph.add_edge(node_06, node_01, 3)
-# graph.add_edge(node_06, node_04, 7)
-# graph.visualize()
+    """
+        Hamiltonian path problem
+    """
+
+    def hamiltonian_path_brute_force_decision(self):
+        permutations = itertools.permutations([_ for _ in self.get_nodes()])
+        for path in permutations:
+            valid_path = True
+            for i in range(1, len(path)):
+                if self.adj_matrix()[path[i - 1].index, path[i].index] == 0:
+                    valid_path = False
+                    break
+            if valid_path:
+                return True
+        return False
+
+    def hamiltonian_path_brute_force_all(self, show_ham_paths: bool = True):
+        self.__ham_paths = 0
+        permutations = itertools.permutations([_ for _ in self.get_nodes()])
+        hamiltonian_paths = []
+        for path in permutations:
+            valid_path = True
+            for i in range(1, len(path)):
+                if self.adj_matrix()[path[i - 1].index, path[i].index] == 0:
+                    valid_path = False
+                    break
+            if valid_path:
+                hamiltonian_paths.append(path)
+                self.__ham_paths += 1
+                if show_ham_paths:
+                    self.__show_hamiltonian_path(path)
+        print("number of paths: " + str(self.__ham_paths))
+        return self.__ham_paths > 0
+
+    def hamiltonian_path_DFS_decision(self):
+        self.__ham_paths = 0
+        for node in self.get_nodes():
+            visited = [False for _ in range(self.size)]
+            visited[node.index] = True
+            if self.__hamiltonian_path_DFS_rec_decision(node, visited, [node]):
+                return True
+        return False
+
+    def __hamiltonian_path_DFS_rec_decision(self, node: Node, visited: list[bool], path: list[Node]):
+        if len(path) == self.size:
+            self.__ham_paths += 1
+            # print("Hamiltonian path found: " + str([node.value for node in path]))
+            self.visualize(title="Hamiltonian path - backtracking")
+            return
+
+        for each in self.get_neighbours(node):
+            if not visited[each.index]:
+                visited[each.index] = True
+                path.append(each)
+
+                self.G[node][each]["color"] = "deeppink"
+
+                self.__hamiltonian_path_DFS_rec_decision(each, visited, path)
+                if self.__ham_paths > 0:
+                    return True
+                visited[each.index] = False
+                path.pop()
+
+                self.G[node][each]["color"] = "black"
+
+        return False
+
+    def hamiltonian_path_DFS_all(self):
+        self.__ham_paths = 0
+        for node in self.get_nodes():
+            visited = [False for _ in range(self.size)]
+            visited[node.index] = True
+            self.__hamiltonian_path_DFS_rec_all(node, visited, [node])
+
+        print("number of paths: " + str(self.__ham_paths))
+        return self.__ham_paths > 0
+
+    def __hamiltonian_path_DFS_rec_all(self, node: Node, visited: list[bool], path: list[Node]):
+        if len(path) == self.size:
+            self.__ham_paths += 1
+            # print("Hamiltonian path found: " + str([node.value for node in path]))
+            self.visualize(title="Hamiltonian path - backtracking")
+            return
+
+        for each in self.get_neighbours(node):
+            if not visited[each.index]:
+                visited[each.index] = True
+                path.append(each)
+
+                self.G[node][each]["color"] = "deeppink"
+
+                self.__hamiltonian_path_DFS_rec_all(each, visited, path)
+                visited[each.index] = False
+                path.pop()
+
+                self.G[node][each]["color"] = "black"
+
+
+graph = Graph(False)
+node_00 = Node("Zlin")
+node_01 = Node("Prague")
+node_02 = Node("Brno")
+node_03 = Node(3)
+node_04 = Node(4)
+node_05 = Node(5)
+node_06 = Node(6)
+
+graph.add_node(node_00)
+graph.add_node(node_01)
+graph.add_node(node_02)
+graph.add_node(node_03)
+graph.add_node(node_04)
+graph.add_node(node_05)
+graph.add_node(node_06)
+
+graph.add_edge(node_00, node_01, 10)
+graph.add_edge(node_01, node_02, 20)
+graph.add_edge(node_01, node_03, 1)
+graph.add_edge(node_02, node_05, 5)
+graph.add_edge(node_02, node_06, 12)
+graph.add_edge(node_03, node_04, 1)
+graph.add_edge(node_03, node_00, 1)
+graph.add_edge(node_04, node_05, 6)
+graph.add_edge(node_05, node_02, 2)
+graph.add_edge(node_06, node_01, 3)
+graph.add_edge(node_06, node_04, 7)
+graph.visualize()
+print(graph.hamiltonian_path_brute_force_all())
+print(graph.hamiltonian_path_DFS_all())
+print(graph.hamiltonian_path_DFS_decision())
 # print(graph.get_neighbours(node_01))
 # print(graph.get_neighbours(node_06))
 # print(graph.get_neighbours(node_00))
