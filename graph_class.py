@@ -19,7 +19,7 @@ from graphviz import Digraph
 WHITE = "white"
 GREY = "grey"
 BLACK = "black"
-NODES_IN_GRAPH = 10
+NODES_IN_GRAPH = 5
 
 
 class Node:
@@ -620,7 +620,7 @@ class Graph:
         if len(path) == self.size:
             self.__ham_paths += 1
             # print("Hamiltonian path found: " + str([node.value for node in path]))
-            self.visualize(title="Hamiltonian path - backtracking")
+            # self.visualize(title="Hamiltonian path - backtracking")
             return
 
         for each in self.get_neighbours(node):
@@ -670,39 +670,38 @@ class Graph:
 
                 self.G[node][each]["color"] = "black"
 
-
-graph = Graph(False)
-node_00 = Node("Zlin")
-node_01 = Node("Prague")
-node_02 = Node("Brno")
-node_03 = Node(3)
-node_04 = Node(4)
-node_05 = Node(5)
-node_06 = Node(6)
-
-graph.add_node(node_00)
-graph.add_node(node_01)
-graph.add_node(node_02)
-graph.add_node(node_03)
-graph.add_node(node_04)
-graph.add_node(node_05)
-graph.add_node(node_06)
-
-graph.add_edge(node_00, node_01, 10)
-graph.add_edge(node_01, node_02, 20)
-graph.add_edge(node_01, node_03, 1)
-graph.add_edge(node_02, node_05, 5)
-graph.add_edge(node_02, node_06, 12)
-graph.add_edge(node_03, node_04, 1)
-graph.add_edge(node_03, node_00, 1)
-graph.add_edge(node_04, node_05, 6)
-graph.add_edge(node_05, node_02, 2)
-graph.add_edge(node_06, node_01, 3)
-graph.add_edge(node_06, node_04, 7)
-graph.visualize()
-print(graph.hamiltonian_path_brute_force_all())
-print(graph.hamiltonian_path_DFS_all())
-print(graph.hamiltonian_path_DFS_decision())
+# graph = Graph(False)
+# node_00 = Node("Zlin")
+# node_01 = Node("Prague")
+# node_02 = Node("Brno")
+# node_03 = Node(3)
+# node_04 = Node(4)
+# node_05 = Node(5)
+# node_06 = Node(6)
+#
+# graph.add_node(node_00)
+# graph.add_node(node_01)
+# graph.add_node(node_02)
+# graph.add_node(node_03)
+# graph.add_node(node_04)
+# graph.add_node(node_05)
+# graph.add_node(node_06)
+#
+# graph.add_edge(node_00, node_01, 10)
+# graph.add_edge(node_01, node_02, 20)
+# graph.add_edge(node_01, node_03, 1)
+# graph.add_edge(node_02, node_05, 5)
+# graph.add_edge(node_02, node_06, 12)
+# graph.add_edge(node_03, node_04, 1)
+# graph.add_edge(node_03, node_00, 1)
+# graph.add_edge(node_04, node_05, 6)
+# graph.add_edge(node_05, node_02, 2)
+# graph.add_edge(node_06, node_01, 3)
+# graph.add_edge(node_06, node_04, 7)
+# graph.visualize()
+# print(graph.hamiltonian_path_brute_force_all())
+# print(graph.hamiltonian_path_DFS_all())
+# print(graph.hamiltonian_path_DFS_decision())
 # print(graph.get_neighbours(node_01))
 # print(graph.get_neighbours(node_06))
 # print(graph.get_neighbours(node_00))
