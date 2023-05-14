@@ -19,7 +19,7 @@ from graphviz import Digraph
 WHITE = "white"
 GREY = "grey"
 BLACK = "black"
-NODES_IN_GRAPH = 5
+NODES_IN_GRAPH = 17
 
 
 class Node:
