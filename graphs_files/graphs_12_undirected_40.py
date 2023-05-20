@@ -76,7 +76,6 @@ graph_00.add_edge(node_08, node_01, 12)
 graph_00.add_edge(node_07, node_02, 15)
 graph_00.add_edge(node_00, node_11, 14)
 
-
 """
 	GRAPH 01
 """
@@ -149,7 +148,6 @@ graph_01.add_edge(node_03, node_10, 2)
 graph_01.add_edge(node_07, node_09, 4)
 graph_01.add_edge(node_07, node_09, 8)
 graph_01.add_edge(node_05, node_06, 13)
-
 
 """
 	GRAPH 02
@@ -224,7 +222,6 @@ graph_02.add_edge(node_06, node_05, 10)
 graph_02.add_edge(node_11, node_11, 13)
 graph_02.add_edge(node_04, node_02, 16)
 
-
 """
 	GRAPH 03
 """
@@ -297,7 +294,6 @@ graph_03.add_edge(node_02, node_05, 1)
 graph_03.add_edge(node_05, node_01, 4)
 graph_03.add_edge(node_01, node_09, 4)
 graph_03.add_edge(node_07, node_04, 3)
-
 
 """
 	GRAPH 04
@@ -372,7 +368,6 @@ graph_04.add_edge(node_11, node_09, 2)
 graph_04.add_edge(node_07, node_01, 12)
 graph_04.add_edge(node_10, node_05, 9)
 
-
 """
 	GRAPH 05
 """
@@ -445,7 +440,6 @@ graph_05.add_edge(node_09, node_07, 19)
 graph_05.add_edge(node_04, node_01, 6)
 graph_05.add_edge(node_02, node_04, 4)
 graph_05.add_edge(node_05, node_05, 6)
-
 
 """
 	GRAPH 06
@@ -520,7 +514,6 @@ graph_06.add_edge(node_06, node_09, 6)
 graph_06.add_edge(node_07, node_11, 17)
 graph_06.add_edge(node_08, node_08, 4)
 
-
 """
 	GRAPH 07
 """
@@ -593,7 +586,6 @@ graph_07.add_edge(node_01, node_05, 16)
 graph_07.add_edge(node_04, node_10, 7)
 graph_07.add_edge(node_01, node_06, 13)
 graph_07.add_edge(node_11, node_01, 8)
-
 
 """
 	GRAPH 08
@@ -668,7 +660,6 @@ graph_08.add_edge(node_09, node_04, 4)
 graph_08.add_edge(node_11, node_04, 11)
 graph_08.add_edge(node_06, node_07, 16)
 
-
 """
 	GRAPH 09
 """
@@ -741,7 +732,6 @@ graph_09.add_edge(node_11, node_09, 14)
 graph_09.add_edge(node_09, node_05, 9)
 graph_09.add_edge(node_07, node_09, 4)
 graph_09.add_edge(node_06, node_10, 16)
-
 
 """
 	GRAPH 10
@@ -816,7 +806,6 @@ graph_10.add_edge(node_09, node_04, 16)
 graph_10.add_edge(node_05, node_08, 19)
 graph_10.add_edge(node_02, node_08, 16)
 
-
 """
 	GRAPH 11
 """
@@ -889,7 +878,6 @@ graph_11.add_edge(node_08, node_06, 4)
 graph_11.add_edge(node_04, node_07, 17)
 graph_11.add_edge(node_02, node_07, 5)
 graph_11.add_edge(node_10, node_00, 17)
-
 
 """
 	GRAPH 12
@@ -964,7 +952,6 @@ graph_12.add_edge(node_11, node_05, 12)
 graph_12.add_edge(node_05, node_06, 19)
 graph_12.add_edge(node_09, node_08, 19)
 
-
 """
 	GRAPH 13
 """
@@ -1037,7 +1024,6 @@ graph_13.add_edge(node_06, node_01, 14)
 graph_13.add_edge(node_11, node_07, 12)
 graph_13.add_edge(node_05, node_01, 2)
 graph_13.add_edge(node_09, node_05, 14)
-
 
 """
 	GRAPH 14
@@ -1112,7 +1098,6 @@ graph_14.add_edge(node_03, node_08, 20)
 graph_14.add_edge(node_09, node_03, 18)
 graph_14.add_edge(node_11, node_09, 5)
 
-
 """
 	GRAPH 15
 """
@@ -1185,7 +1170,6 @@ graph_15.add_edge(node_08, node_03, 13)
 graph_15.add_edge(node_09, node_03, 1)
 graph_15.add_edge(node_04, node_07, 15)
 graph_15.add_edge(node_07, node_04, 16)
-
 
 """
 	GRAPH 16
@@ -1260,7 +1244,6 @@ graph_16.add_edge(node_08, node_04, 15)
 graph_16.add_edge(node_02, node_07, 2)
 graph_16.add_edge(node_02, node_11, 13)
 
-
 """
 	GRAPH 17
 """
@@ -1333,7 +1316,6 @@ graph_17.add_edge(node_11, node_04, 20)
 graph_17.add_edge(node_09, node_01, 19)
 graph_17.add_edge(node_07, node_04, 10)
 graph_17.add_edge(node_08, node_10, 1)
-
 
 """
 	GRAPH 18
@@ -1408,7 +1390,6 @@ graph_18.add_edge(node_02, node_11, 14)
 graph_18.add_edge(node_11, node_05, 2)
 graph_18.add_edge(node_01, node_00, 10)
 
-
 """
 	GRAPH 19
 """
@@ -1481,7 +1462,6 @@ graph_19.add_edge(node_00, node_11, 14)
 graph_19.add_edge(node_07, node_07, 1)
 graph_19.add_edge(node_02, node_06, 4)
 graph_19.add_edge(node_02, node_06, 5)
-
 
 """
 	GRAPH 20
@@ -1556,7 +1536,6 @@ graph_20.add_edge(node_01, node_03, 18)
 graph_20.add_edge(node_02, node_11, 4)
 graph_20.add_edge(node_09, node_09, 8)
 
-
 """
 	GRAPH 21
 """
@@ -1629,7 +1608,6 @@ graph_21.add_edge(node_08, node_02, 12)
 graph_21.add_edge(node_04, node_05, 9)
 graph_21.add_edge(node_00, node_00, 2)
 graph_21.add_edge(node_03, node_10, 14)
-
 
 """
 	GRAPH 22
@@ -1704,7 +1682,6 @@ graph_22.add_edge(node_08, node_03, 19)
 graph_22.add_edge(node_03, node_02, 20)
 graph_22.add_edge(node_02, node_09, 7)
 
-
 """
 	GRAPH 23
 """
@@ -1777,7 +1754,6 @@ graph_23.add_edge(node_09, node_10, 12)
 graph_23.add_edge(node_03, node_00, 17)
 graph_23.add_edge(node_03, node_01, 19)
 graph_23.add_edge(node_04, node_07, 14)
-
 
 """
 	GRAPH 24
@@ -1852,7 +1828,6 @@ graph_24.add_edge(node_08, node_00, 16)
 graph_24.add_edge(node_08, node_11, 16)
 graph_24.add_edge(node_11, node_04, 8)
 
-
 """
 	GRAPH 25
 """
@@ -1925,7 +1900,6 @@ graph_25.add_edge(node_03, node_04, 10)
 graph_25.add_edge(node_03, node_01, 10)
 graph_25.add_edge(node_04, node_00, 4)
 graph_25.add_edge(node_11, node_07, 2)
-
 
 """
 	GRAPH 26
@@ -2000,7 +1974,6 @@ graph_26.add_edge(node_06, node_10, 12)
 graph_26.add_edge(node_10, node_09, 16)
 graph_26.add_edge(node_07, node_10, 14)
 
-
 """
 	GRAPH 27
 """
@@ -2073,7 +2046,6 @@ graph_27.add_edge(node_11, node_00, 20)
 graph_27.add_edge(node_08, node_06, 6)
 graph_27.add_edge(node_07, node_11, 13)
 graph_27.add_edge(node_00, node_04, 14)
-
 
 """
 	GRAPH 28
@@ -2148,7 +2120,6 @@ graph_28.add_edge(node_07, node_03, 5)
 graph_28.add_edge(node_04, node_00, 4)
 graph_28.add_edge(node_03, node_06, 20)
 
-
 """
 	GRAPH 29
 """
@@ -2221,7 +2192,6 @@ graph_29.add_edge(node_07, node_05, 12)
 graph_29.add_edge(node_10, node_11, 14)
 graph_29.add_edge(node_01, node_08, 4)
 graph_29.add_edge(node_09, node_01, 15)
-
 
 """
 	GRAPH 30
@@ -2296,7 +2266,6 @@ graph_30.add_edge(node_00, node_02, 12)
 graph_30.add_edge(node_05, node_11, 3)
 graph_30.add_edge(node_00, node_04, 13)
 
-
 """
 	GRAPH 31
 """
@@ -2369,7 +2338,6 @@ graph_31.add_edge(node_01, node_11, 7)
 graph_31.add_edge(node_01, node_07, 16)
 graph_31.add_edge(node_10, node_11, 12)
 graph_31.add_edge(node_05, node_08, 16)
-
 
 """
 	GRAPH 32
@@ -2444,7 +2412,6 @@ graph_32.add_edge(node_06, node_00, 4)
 graph_32.add_edge(node_08, node_01, 19)
 graph_32.add_edge(node_05, node_07, 19)
 
-
 """
 	GRAPH 33
 """
@@ -2517,7 +2484,6 @@ graph_33.add_edge(node_02, node_07, 14)
 graph_33.add_edge(node_03, node_09, 3)
 graph_33.add_edge(node_10, node_08, 17)
 graph_33.add_edge(node_01, node_07, 15)
-
 
 """
 	GRAPH 34
@@ -2592,7 +2558,6 @@ graph_34.add_edge(node_05, node_04, 14)
 graph_34.add_edge(node_09, node_07, 10)
 graph_34.add_edge(node_05, node_10, 4)
 
-
 """
 	GRAPH 35
 """
@@ -2665,7 +2630,6 @@ graph_35.add_edge(node_11, node_00, 5)
 graph_35.add_edge(node_02, node_04, 20)
 graph_35.add_edge(node_02, node_00, 1)
 graph_35.add_edge(node_09, node_08, 15)
-
 
 """
 	GRAPH 36
@@ -2740,7 +2704,6 @@ graph_36.add_edge(node_05, node_09, 19)
 graph_36.add_edge(node_10, node_00, 4)
 graph_36.add_edge(node_08, node_06, 5)
 
-
 """
 	GRAPH 37
 """
@@ -2813,7 +2776,6 @@ graph_37.add_edge(node_02, node_01, 17)
 graph_37.add_edge(node_07, node_07, 3)
 graph_37.add_edge(node_08, node_01, 5)
 graph_37.add_edge(node_02, node_08, 17)
-
 
 """
 	GRAPH 38
@@ -2888,7 +2850,6 @@ graph_38.add_edge(node_11, node_02, 2)
 graph_38.add_edge(node_08, node_02, 14)
 graph_38.add_edge(node_03, node_02, 17)
 
-
 """
 	GRAPH 39
 """
@@ -2961,7 +2922,6 @@ graph_39.add_edge(node_07, node_00, 3)
 graph_39.add_edge(node_00, node_02, 5)
 graph_39.add_edge(node_08, node_09, 4)
 graph_39.add_edge(node_08, node_02, 7)
-
 
 """
 	GRAPH 40
@@ -3036,7 +2996,6 @@ graph_40.add_edge(node_08, node_11, 7)
 graph_40.add_edge(node_01, node_01, 20)
 graph_40.add_edge(node_05, node_06, 18)
 
-
 """
 	GRAPH 41
 """
@@ -3109,7 +3068,6 @@ graph_41.add_edge(node_04, node_07, 19)
 graph_41.add_edge(node_10, node_11, 4)
 graph_41.add_edge(node_02, node_04, 3)
 graph_41.add_edge(node_03, node_04, 20)
-
 
 """
 	GRAPH 42
@@ -3184,7 +3142,6 @@ graph_42.add_edge(node_04, node_07, 10)
 graph_42.add_edge(node_07, node_05, 19)
 graph_42.add_edge(node_05, node_10, 20)
 
-
 """
 	GRAPH 43
 """
@@ -3257,7 +3214,6 @@ graph_43.add_edge(node_07, node_05, 2)
 graph_43.add_edge(node_00, node_10, 16)
 graph_43.add_edge(node_00, node_05, 7)
 graph_43.add_edge(node_04, node_02, 14)
-
 
 """
 	GRAPH 44
@@ -3332,7 +3288,6 @@ graph_44.add_edge(node_10, node_09, 7)
 graph_44.add_edge(node_05, node_04, 2)
 graph_44.add_edge(node_09, node_04, 17)
 
-
 """
 	GRAPH 45
 """
@@ -3405,7 +3360,6 @@ graph_45.add_edge(node_03, node_03, 11)
 graph_45.add_edge(node_06, node_04, 9)
 graph_45.add_edge(node_09, node_10, 18)
 graph_45.add_edge(node_09, node_11, 12)
-
 
 """
 	GRAPH 46
@@ -3480,7 +3434,6 @@ graph_46.add_edge(node_10, node_09, 10)
 graph_46.add_edge(node_09, node_08, 1)
 graph_46.add_edge(node_09, node_09, 1)
 
-
 """
 	GRAPH 47
 """
@@ -3553,7 +3506,6 @@ graph_47.add_edge(node_06, node_05, 15)
 graph_47.add_edge(node_01, node_05, 3)
 graph_47.add_edge(node_09, node_09, 17)
 graph_47.add_edge(node_02, node_10, 1)
-
 
 """
 	GRAPH 48
@@ -3628,7 +3580,6 @@ graph_48.add_edge(node_05, node_04, 14)
 graph_48.add_edge(node_00, node_11, 16)
 graph_48.add_edge(node_00, node_00, 16)
 
-
 """
 	GRAPH 49
 """
@@ -3701,7 +3652,6 @@ graph_49.add_edge(node_08, node_06, 4)
 graph_49.add_edge(node_00, node_04, 11)
 graph_49.add_edge(node_10, node_07, 6)
 graph_49.add_edge(node_02, node_00, 20)
-
 
 """
 	GRAPH 50
@@ -3776,7 +3726,6 @@ graph_50.add_edge(node_02, node_06, 7)
 graph_50.add_edge(node_03, node_11, 20)
 graph_50.add_edge(node_10, node_03, 18)
 
-
 """
 	GRAPH 51
 """
@@ -3849,7 +3798,6 @@ graph_51.add_edge(node_01, node_08, 18)
 graph_51.add_edge(node_06, node_10, 8)
 graph_51.add_edge(node_09, node_01, 19)
 graph_51.add_edge(node_09, node_08, 10)
-
 
 """
 	GRAPH 52
@@ -3924,7 +3872,6 @@ graph_52.add_edge(node_11, node_04, 10)
 graph_52.add_edge(node_03, node_09, 3)
 graph_52.add_edge(node_02, node_01, 10)
 
-
 """
 	GRAPH 53
 """
@@ -3997,7 +3944,6 @@ graph_53.add_edge(node_05, node_02, 9)
 graph_53.add_edge(node_10, node_04, 18)
 graph_53.add_edge(node_00, node_00, 11)
 graph_53.add_edge(node_07, node_06, 3)
-
 
 """
 	GRAPH 54
@@ -4072,7 +4018,6 @@ graph_54.add_edge(node_08, node_00, 3)
 graph_54.add_edge(node_05, node_09, 7)
 graph_54.add_edge(node_01, node_03, 4)
 
-
 """
 	GRAPH 55
 """
@@ -4145,7 +4090,6 @@ graph_55.add_edge(node_01, node_08, 5)
 graph_55.add_edge(node_04, node_03, 11)
 graph_55.add_edge(node_02, node_00, 16)
 graph_55.add_edge(node_04, node_10, 12)
-
 
 """
 	GRAPH 56
@@ -4220,7 +4164,6 @@ graph_56.add_edge(node_00, node_11, 5)
 graph_56.add_edge(node_06, node_09, 15)
 graph_56.add_edge(node_10, node_03, 12)
 
-
 """
 	GRAPH 57
 """
@@ -4293,7 +4236,6 @@ graph_57.add_edge(node_11, node_07, 18)
 graph_57.add_edge(node_06, node_08, 16)
 graph_57.add_edge(node_06, node_11, 6)
 graph_57.add_edge(node_01, node_07, 10)
-
 
 """
 	GRAPH 58
@@ -4368,7 +4310,6 @@ graph_58.add_edge(node_07, node_00, 3)
 graph_58.add_edge(node_11, node_02, 2)
 graph_58.add_edge(node_07, node_11, 19)
 
-
 """
 	GRAPH 59
 """
@@ -4441,7 +4382,6 @@ graph_59.add_edge(node_11, node_08, 15)
 graph_59.add_edge(node_02, node_11, 4)
 graph_59.add_edge(node_09, node_00, 18)
 graph_59.add_edge(node_04, node_00, 3)
-
 
 """
 	GRAPH 60
@@ -4516,7 +4456,6 @@ graph_60.add_edge(node_06, node_02, 10)
 graph_60.add_edge(node_03, node_02, 19)
 graph_60.add_edge(node_04, node_04, 15)
 
-
 """
 	GRAPH 61
 """
@@ -4589,7 +4528,6 @@ graph_61.add_edge(node_02, node_00, 17)
 graph_61.add_edge(node_10, node_07, 6)
 graph_61.add_edge(node_00, node_06, 6)
 graph_61.add_edge(node_03, node_04, 12)
-
 
 """
 	GRAPH 62
@@ -4664,7 +4602,6 @@ graph_62.add_edge(node_02, node_11, 15)
 graph_62.add_edge(node_00, node_05, 9)
 graph_62.add_edge(node_10, node_11, 17)
 
-
 """
 	GRAPH 63
 """
@@ -4737,7 +4674,6 @@ graph_63.add_edge(node_10, node_04, 20)
 graph_63.add_edge(node_02, node_08, 5)
 graph_63.add_edge(node_03, node_09, 15)
 graph_63.add_edge(node_08, node_06, 14)
-
 
 """
 	GRAPH 64
@@ -4812,7 +4748,6 @@ graph_64.add_edge(node_10, node_11, 20)
 graph_64.add_edge(node_03, node_11, 14)
 graph_64.add_edge(node_03, node_06, 14)
 
-
 """
 	GRAPH 65
 """
@@ -4885,7 +4820,6 @@ graph_65.add_edge(node_02, node_11, 20)
 graph_65.add_edge(node_08, node_10, 16)
 graph_65.add_edge(node_04, node_07, 20)
 graph_65.add_edge(node_01, node_10, 18)
-
 
 """
 	GRAPH 66
@@ -4960,7 +4894,6 @@ graph_66.add_edge(node_06, node_02, 14)
 graph_66.add_edge(node_06, node_00, 7)
 graph_66.add_edge(node_02, node_10, 3)
 
-
 """
 	GRAPH 67
 """
@@ -5033,7 +4966,6 @@ graph_67.add_edge(node_06, node_08, 3)
 graph_67.add_edge(node_01, node_03, 18)
 graph_67.add_edge(node_01, node_11, 4)
 graph_67.add_edge(node_01, node_05, 15)
-
 
 """
 	GRAPH 68
@@ -5108,7 +5040,6 @@ graph_68.add_edge(node_02, node_06, 17)
 graph_68.add_edge(node_11, node_00, 2)
 graph_68.add_edge(node_00, node_08, 20)
 
-
 """
 	GRAPH 69
 """
@@ -5181,7 +5112,6 @@ graph_69.add_edge(node_10, node_10, 1)
 graph_69.add_edge(node_02, node_08, 14)
 graph_69.add_edge(node_07, node_05, 18)
 graph_69.add_edge(node_08, node_09, 9)
-
 
 """
 	GRAPH 70
@@ -5256,7 +5186,6 @@ graph_70.add_edge(node_04, node_10, 14)
 graph_70.add_edge(node_10, node_04, 15)
 graph_70.add_edge(node_11, node_08, 17)
 
-
 """
 	GRAPH 71
 """
@@ -5329,7 +5258,6 @@ graph_71.add_edge(node_03, node_00, 5)
 graph_71.add_edge(node_06, node_01, 15)
 graph_71.add_edge(node_00, node_02, 6)
 graph_71.add_edge(node_04, node_09, 6)
-
 
 """
 	GRAPH 72
@@ -5404,7 +5332,6 @@ graph_72.add_edge(node_06, node_06, 1)
 graph_72.add_edge(node_06, node_03, 6)
 graph_72.add_edge(node_01, node_07, 11)
 
-
 """
 	GRAPH 73
 """
@@ -5477,7 +5404,6 @@ graph_73.add_edge(node_01, node_07, 2)
 graph_73.add_edge(node_06, node_09, 11)
 graph_73.add_edge(node_08, node_11, 16)
 graph_73.add_edge(node_09, node_03, 18)
-
 
 """
 	GRAPH 74
@@ -5552,7 +5478,6 @@ graph_74.add_edge(node_10, node_00, 11)
 graph_74.add_edge(node_00, node_06, 17)
 graph_74.add_edge(node_06, node_07, 13)
 
-
 """
 	GRAPH 75
 """
@@ -5625,7 +5550,6 @@ graph_75.add_edge(node_06, node_07, 20)
 graph_75.add_edge(node_07, node_07, 6)
 graph_75.add_edge(node_04, node_11, 8)
 graph_75.add_edge(node_10, node_09, 10)
-
 
 """
 	GRAPH 76
@@ -5700,7 +5624,6 @@ graph_76.add_edge(node_08, node_10, 12)
 graph_76.add_edge(node_04, node_07, 17)
 graph_76.add_edge(node_11, node_10, 7)
 
-
 """
 	GRAPH 77
 """
@@ -5773,7 +5696,6 @@ graph_77.add_edge(node_06, node_11, 17)
 graph_77.add_edge(node_00, node_00, 20)
 graph_77.add_edge(node_01, node_09, 12)
 graph_77.add_edge(node_08, node_09, 16)
-
 
 """
 	GRAPH 78
@@ -5848,7 +5770,6 @@ graph_78.add_edge(node_00, node_08, 18)
 graph_78.add_edge(node_04, node_10, 6)
 graph_78.add_edge(node_10, node_03, 11)
 
-
 """
 	GRAPH 79
 """
@@ -5921,7 +5842,6 @@ graph_79.add_edge(node_06, node_03, 4)
 graph_79.add_edge(node_05, node_09, 10)
 graph_79.add_edge(node_11, node_06, 17)
 graph_79.add_edge(node_01, node_05, 13)
-
 
 """
 	GRAPH 80
@@ -5996,7 +5916,6 @@ graph_80.add_edge(node_08, node_01, 20)
 graph_80.add_edge(node_04, node_03, 19)
 graph_80.add_edge(node_06, node_00, 8)
 
-
 """
 	GRAPH 81
 """
@@ -6069,7 +5988,6 @@ graph_81.add_edge(node_01, node_06, 1)
 graph_81.add_edge(node_10, node_07, 6)
 graph_81.add_edge(node_04, node_02, 3)
 graph_81.add_edge(node_01, node_02, 13)
-
 
 """
 	GRAPH 82
@@ -6144,7 +6062,6 @@ graph_82.add_edge(node_07, node_02, 12)
 graph_82.add_edge(node_06, node_04, 3)
 graph_82.add_edge(node_01, node_04, 6)
 
-
 """
 	GRAPH 83
 """
@@ -6217,7 +6134,6 @@ graph_83.add_edge(node_06, node_11, 9)
 graph_83.add_edge(node_02, node_00, 20)
 graph_83.add_edge(node_03, node_09, 15)
 graph_83.add_edge(node_04, node_10, 15)
-
 
 """
 	GRAPH 84
@@ -6292,7 +6208,6 @@ graph_84.add_edge(node_06, node_00, 4)
 graph_84.add_edge(node_09, node_06, 2)
 graph_84.add_edge(node_02, node_04, 7)
 
-
 """
 	GRAPH 85
 """
@@ -6365,7 +6280,6 @@ graph_85.add_edge(node_04, node_07, 14)
 graph_85.add_edge(node_01, node_00, 7)
 graph_85.add_edge(node_06, node_04, 2)
 graph_85.add_edge(node_11, node_02, 20)
-
 
 """
 	GRAPH 86
@@ -6440,7 +6354,6 @@ graph_86.add_edge(node_06, node_09, 1)
 graph_86.add_edge(node_04, node_11, 20)
 graph_86.add_edge(node_06, node_01, 17)
 
-
 """
 	GRAPH 87
 """
@@ -6513,7 +6426,6 @@ graph_87.add_edge(node_05, node_01, 2)
 graph_87.add_edge(node_09, node_10, 14)
 graph_87.add_edge(node_03, node_08, 2)
 graph_87.add_edge(node_10, node_02, 16)
-
 
 """
 	GRAPH 88
@@ -6588,7 +6500,6 @@ graph_88.add_edge(node_03, node_10, 10)
 graph_88.add_edge(node_06, node_03, 3)
 graph_88.add_edge(node_10, node_00, 2)
 
-
 """
 	GRAPH 89
 """
@@ -6661,7 +6572,6 @@ graph_89.add_edge(node_06, node_04, 8)
 graph_89.add_edge(node_10, node_06, 3)
 graph_89.add_edge(node_06, node_11, 2)
 graph_89.add_edge(node_11, node_04, 17)
-
 
 """
 	GRAPH 90
@@ -6736,7 +6646,6 @@ graph_90.add_edge(node_05, node_01, 20)
 graph_90.add_edge(node_11, node_02, 5)
 graph_90.add_edge(node_07, node_09, 10)
 
-
 """
 	GRAPH 91
 """
@@ -6809,7 +6718,6 @@ graph_91.add_edge(node_02, node_03, 9)
 graph_91.add_edge(node_02, node_08, 2)
 graph_91.add_edge(node_05, node_02, 1)
 graph_91.add_edge(node_03, node_07, 4)
-
 
 """
 	GRAPH 92
@@ -6884,7 +6792,6 @@ graph_92.add_edge(node_05, node_03, 7)
 graph_92.add_edge(node_08, node_04, 4)
 graph_92.add_edge(node_11, node_07, 20)
 
-
 """
 	GRAPH 93
 """
@@ -6957,7 +6864,6 @@ graph_93.add_edge(node_06, node_11, 2)
 graph_93.add_edge(node_03, node_07, 7)
 graph_93.add_edge(node_04, node_08, 3)
 graph_93.add_edge(node_07, node_10, 19)
-
 
 """
 	GRAPH 94
@@ -7032,7 +6938,6 @@ graph_94.add_edge(node_00, node_00, 11)
 graph_94.add_edge(node_03, node_04, 15)
 graph_94.add_edge(node_00, node_03, 19)
 
-
 """
 	GRAPH 95
 """
@@ -7105,7 +7010,6 @@ graph_95.add_edge(node_10, node_03, 17)
 graph_95.add_edge(node_00, node_02, 15)
 graph_95.add_edge(node_09, node_11, 20)
 graph_95.add_edge(node_09, node_10, 13)
-
 
 """
 	GRAPH 96
@@ -7180,7 +7084,6 @@ graph_96.add_edge(node_04, node_01, 7)
 graph_96.add_edge(node_09, node_00, 16)
 graph_96.add_edge(node_02, node_03, 16)
 
-
 """
 	GRAPH 97
 """
@@ -7253,7 +7156,6 @@ graph_97.add_edge(node_00, node_10, 17)
 graph_97.add_edge(node_01, node_09, 5)
 graph_97.add_edge(node_05, node_08, 3)
 graph_97.add_edge(node_10, node_04, 19)
-
 
 """
 	GRAPH 98
@@ -7328,7 +7230,6 @@ graph_98.add_edge(node_03, node_03, 19)
 graph_98.add_edge(node_05, node_11, 5)
 graph_98.add_edge(node_10, node_03, 8)
 
-
 """
 	GRAPH 99
 """
@@ -7402,4 +7303,13 @@ graph_99.add_edge(node_05, node_06, 3)
 graph_99.add_edge(node_05, node_11, 20)
 graph_99.add_edge(node_09, node_04, 16)
 
-graphs = [graph_00, graph_01, graph_02, graph_03, graph_04, graph_05, graph_06, graph_07, graph_08, graph_09, graph_10, graph_11, graph_12, graph_13, graph_14, graph_15, graph_16, graph_17, graph_18, graph_19, graph_20, graph_21, graph_22, graph_23, graph_24, graph_25, graph_26, graph_27, graph_28, graph_29, graph_30, graph_31, graph_32, graph_33, graph_34, graph_35, graph_36, graph_37, graph_38, graph_39, graph_40, graph_41, graph_42, graph_43, graph_44, graph_45, graph_46, graph_47, graph_48, graph_49, graph_50, graph_51, graph_52, graph_53, graph_54, graph_55, graph_56, graph_57, graph_58, graph_59, graph_60, graph_61, graph_62, graph_63, graph_64, graph_65, graph_66, graph_67, graph_68, graph_69, graph_70, graph_71, graph_72, graph_73, graph_74, graph_75, graph_76, graph_77, graph_78, graph_79, graph_80, graph_81, graph_82, graph_83, graph_84, graph_85, graph_86, graph_87, graph_88, graph_89, graph_90, graph_91, graph_92, graph_93, graph_94, graph_95, graph_96, graph_97, graph_98, graph_99]
+graphs = [graph_00, graph_01, graph_02, graph_03, graph_04, graph_05, graph_06, graph_07, graph_08, graph_09, graph_10,
+          graph_11, graph_12, graph_13, graph_14, graph_15, graph_16, graph_17, graph_18, graph_19, graph_20, graph_21,
+          graph_22, graph_23, graph_24, graph_25, graph_26, graph_27, graph_28, graph_29, graph_30, graph_31, graph_32,
+          graph_33, graph_34, graph_35, graph_36, graph_37, graph_38, graph_39, graph_40, graph_41, graph_42, graph_43,
+          graph_44, graph_45, graph_46, graph_47, graph_48, graph_49, graph_50, graph_51, graph_52, graph_53, graph_54,
+          graph_55, graph_56, graph_57, graph_58, graph_59, graph_60, graph_61, graph_62, graph_63, graph_64, graph_65,
+          graph_66, graph_67, graph_68, graph_69, graph_70, graph_71, graph_72, graph_73, graph_74, graph_75, graph_76,
+          graph_77, graph_78, graph_79, graph_80, graph_81, graph_82, graph_83, graph_84, graph_85, graph_86, graph_87,
+          graph_88, graph_89, graph_90, graph_91, graph_92, graph_93, graph_94, graph_95, graph_96, graph_97, graph_98,
+          graph_99]

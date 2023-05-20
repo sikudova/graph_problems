@@ -4503,15 +4503,15 @@ graph_99.add_edge(node_06, node_03, 17)
 graph_99.add_edge(node_04, node_07, 1)
 graph_99.add_edge(node_03, node_04, 9)
 
-# graphs = [graph_00, graph_01, graph_02, graph_03, graph_04, graph_05, graph_06, graph_07, graph_08, graph_09, graph_10,
-#           graph_11, graph_12, graph_13, graph_14, graph_15, graph_16, graph_17, graph_18, graph_19, graph_20, graph_21,
-#           graph_22, graph_23, graph_24, graph_25, graph_26, graph_27, graph_28, graph_29, graph_30, graph_31, graph_32,
-#           graph_33, graph_34, graph_35, graph_36, graph_37, graph_38, graph_39, graph_40, graph_41, graph_42, graph_43,
-#           graph_44, graph_45, graph_46, graph_47, graph_48, graph_49, graph_50, graph_51, graph_52, graph_53, graph_54,
-#           graph_55, graph_56, graph_57, graph_58, graph_59, graph_60, graph_61, graph_62, graph_63, graph_64, graph_65,
-#           graph_66, graph_67, graph_68, graph_69, graph_70, graph_71, graph_72, graph_73, graph_74, graph_75, graph_76,
-#           graph_77, graph_78, graph_79, graph_80, graph_81, graph_82, graph_83, graph_84, graph_85, graph_86, graph_87,
-#           graph_88, graph_89, graph_90, graph_91, graph_92, graph_93, graph_94, graph_95, graph_96, graph_97, graph_98,
-#           graph_99]
+graphs = [graph_00, graph_01, graph_02, graph_03, graph_04, graph_05, graph_06, graph_07, graph_08, graph_09, graph_10,
+          graph_11, graph_12, graph_13, graph_14, graph_15, graph_16, graph_17, graph_18, graph_19, graph_20, graph_21,
+          graph_22, graph_23, graph_24, graph_25, graph_26, graph_27, graph_28, graph_29, graph_30, graph_31, graph_32,
+          graph_33, graph_34, graph_35, graph_36, graph_37, graph_38, graph_39, graph_40, graph_41, graph_42, graph_43,
+          graph_44, graph_45, graph_46, graph_47, graph_48, graph_49, graph_50, graph_51, graph_52, graph_53, graph_54,
+          graph_55, graph_56, graph_57, graph_58, graph_59, graph_60, graph_61, graph_62, graph_63, graph_64, graph_65,
+          graph_66, graph_67, graph_68, graph_69, graph_70, graph_71, graph_72, graph_73, graph_74, graph_75, graph_76,
+          graph_77, graph_78, graph_79, graph_80, graph_81, graph_82, graph_83, graph_84, graph_85, graph_86, graph_87,
+          graph_88, graph_89, graph_90, graph_91, graph_92, graph_93, graph_94, graph_95, graph_96, graph_97, graph_98,
+          graph_99]
 
-graphs = [graph_00, graph_01, graph_02, graph_03, graph_04, graph_05, graph_06, graph_07, graph_08, graph_09]
+# graphs = [graph_00, graph_01, graph_02, graph_03, graph_04, graph_05, graph_06, graph_07, graph_08, graph_09]
