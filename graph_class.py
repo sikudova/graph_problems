@@ -19,12 +19,11 @@ from graphviz import Digraph
 WHITE = "white"
 GREY = "grey"
 BLACK = "black"
-NODES_IN_GRAPH = 17
+NODES_IN_GRAPH = 25
 
 
 class Node:
     iterator = [_ for _ in range(NODES_IN_GRAPH)]
-    # index_iter = itertools.count(start=0)
     index_iter = itertools.cycle(iterator)
 
     def __init__(self, value):
@@ -670,6 +669,139 @@ class Graph:
 
                 self.G[node][each]["color"] = "black"
 
+    """
+        Travelling salesman problem
+    """
+
+    def TSP_brute_force(self, show_tsp: bool = False) -> Tuple[bool, int]:
+        """
+        Brute force naive algorithm to solve travelling salesman problem.
+        Loops through all possible paths in the graphs and checks if the path can be extended to a cycle.
+        If yes, checks if the cycle´s length is shorter than the length of the so far found shortest hamiltonian path.
+
+        :param show_tsp: True to show the cycle, False otherwise
+        :return: (bool, int) - (True, number): there is a hamiltonian cycle in the graph, the shortest has length of number units
+                             - (False, math.int): there is no hamiltonian cycle in the graph
+        """
+
+        tsp_cycle = False
+        shortest_ham_cycle_length = math.inf
+        permutations = itertools.permutations([_ for _ in self.get_nodes()])
+
+        # loop through all paths
+        for path in permutations:
+            current_length = 0
+            valid_path = True
+            # loop through all nodes in path
+            for i in range(1, len(path)):
+                if self.adj_matrix()[path[i - 1].index, path[i].index] == 0:
+                    valid_path = False
+                    break
+                current_length += self.adj_matrix()[path[i - 1].index, path[i].index]
+
+            if valid_path and self.adj_matrix()[path[len(path) - 1].index, path[0].index] != 0:
+                # checking for shorter hamiltonian path
+                if current_length + self.adj_matrix()[
+                    path[len(path) - 1].index, path[0].index] < shortest_ham_cycle_length:
+                    shortest_ham_cycle_length = current_length + self.adj_matrix()[
+                        path[len(path) - 1].index, path[0].index]  # new shortest hamiltonian path
+                    cycle = list(path) + [path[0]]
+                    tsp_cycle = True
+                    if show_tsp:
+                        self.__show_hamiltonian_path(cycle)
+        return tsp_cycle, shortest_ham_cycle_length
+
+    def TSP_DFS(self):
+        visited = [False for _ in range(self.size)]
+        visited[0] = True
+        node = list(self.get_nodes())[0]
+
+        shortest_ham_cycle_length = math.inf
+        tsp_result = self.__TSP_DFS_rec(node, visited, [node], shortest_ham_cycle_length, 0)
+        return tsp_result != math.inf, tsp_result
+
+    def __TSP_DFS_rec(self, node: Node, visited: list[bool], path: list[Node], shortest_ham_cycle_length: int,
+                      current_length: int):
+
+        if len(path) == self.size and self.adj_matrix()[path[len(path) - 1].index, path[0].index] != 0:
+
+            # checking for shorter hamiltonian path
+            if current_length + self.adj_matrix()[
+                path[len(path) - 1].index, path[0].index] < shortest_ham_cycle_length:
+                shortest_ham_cycle_length = current_length + self.adj_matrix()[
+                    path[len(path) - 1].index, path[0].index]  # new shortest hamiltonian path
+
+                # pink for visualization
+                # self.G[path[len(path) - 1]][path[0]]["color"] = "deeppink"
+                # self.visualize(title="TSP - backtracking")
+                # self.G[path[len(path) - 1]][path[0]]["color"] = "black"
+
+            return shortest_ham_cycle_length
+
+        for each in self.get_neighbours(node):
+            if not visited[each.index]:
+                visited[each.index] = True
+                path.append(each)
+
+                self.G[node][each]["color"] = "deeppink"
+
+                current_length += self.adj_matrix()[node.index, each.index]
+                shortest_ham_cycle_length = self.__TSP_DFS_rec(each, visited, path, shortest_ham_cycle_length,
+                                                               current_length)
+                visited[each.index] = False
+                path.pop()
+                current_length -= self.adj_matrix()[node.index, each.index]
+
+                self.G[node][each]["color"] = "black"
+
+        return shortest_ham_cycle_length
+
+    def TSP_DFS_cut(self):
+        visited = [False for _ in range(self.size)]
+        visited[0] = True
+        node = list(self.get_nodes())[0]
+
+        shortest_ham_cycle_length = math.inf
+        tsp_result = self.__TSP_DFS_cut_rec(node, visited, [node], shortest_ham_cycle_length, 0)
+        return tsp_result != math.inf, tsp_result
+
+    def __TSP_DFS_cut_rec(self, node: Node, visited: list[bool], path: list[Node], shortest_ham_cycle_length: int,
+                          current_length: int):
+
+        if len(path) == self.size and self.adj_matrix()[path[len(path) - 1].index, path[0].index] != 0:
+
+            # checking for shorter hamiltonian path
+            if current_length + self.adj_matrix()[
+                path[len(path) - 1].index, path[0].index] < shortest_ham_cycle_length:
+                shortest_ham_cycle_length = current_length + self.adj_matrix()[
+                    path[len(path) - 1].index, path[0].index]  # new shortest hamiltonian path
+
+                # pink for visualization
+                # self.G[path[len(path) - 1]][path[0]]["color"] = "deeppink"
+                # self.visualize(title="TSP - backtracking with cut")
+                # self.G[path[len(path) - 1]][path[0]]["color"] = "black"
+
+            return shortest_ham_cycle_length
+
+        for each in self.get_neighbours(node):
+            if not visited[each.index]:
+                visited[each.index] = True
+                path.append(each)
+
+                current_length += self.adj_matrix()[node.index, each.index]
+                if current_length < shortest_ham_cycle_length:
+                    self.G[node][each]["color"] = "deeppink"
+
+                    shortest_ham_cycle_length = self.__TSP_DFS_cut_rec(each, visited, path, shortest_ham_cycle_length,
+                                                                       current_length)
+                visited[each.index] = False
+                path.pop()
+                current_length -= self.adj_matrix()[node.index, each.index]
+
+                self.G[node][each]["color"] = "black"
+
+        return shortest_ham_cycle_length
+
 # graph = Graph(False)
 # node_00 = Node("Zlin")
 # node_01 = Node("Prague")
@@ -691,14 +823,20 @@ class Graph:
 # graph.add_edge(node_01, node_02, 20)
 # graph.add_edge(node_01, node_03, 1)
 # graph.add_edge(node_02, node_05, 5)
+# graph.add_edge(node_02, node_03, 1)
 # graph.add_edge(node_02, node_06, 12)
 # graph.add_edge(node_03, node_04, 1)
 # graph.add_edge(node_03, node_00, 1)
 # graph.add_edge(node_04, node_05, 6)
 # graph.add_edge(node_05, node_02, 2)
+# graph.add_edge(node_05, node_06, 2)
 # graph.add_edge(node_06, node_01, 3)
 # graph.add_edge(node_06, node_04, 7)
+# graph.add_edge(node_06, node_00, 1)
 # graph.visualize()
+# print(graph.TSP_brute_force(show_tsp=True))
+# print(graph.TSP_DFS())
+# print(graph.TSP_DFS_cut())
 # print(graph.hamiltonian_path_brute_force_all())
 # print(graph.hamiltonian_path_DFS_all())
 # print(graph.hamiltonian_path_DFS_decision())
@@ -706,7 +844,7 @@ class Graph:
 # print(graph.get_neighbours(node_06))
 # print(graph.get_neighbours(node_00))
 
-# graph.BFS_basic(node_01, True, False)
+# graph.BFS_basic(node_01, True, True)
 # graph.BFS_attributes(node_02, True)
 # graph.DFS_iterative_basic(node_01, True)
 # graph.DFS_iterative_attributes(node_01, True)
